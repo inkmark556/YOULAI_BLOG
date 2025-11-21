@@ -1,5 +1,12 @@
 [
   {
+    "id": "post_20251121155848",
+    "title": "C#与Unity中读取NetCDF文件完整指南",
+    "date": "2025.11.21",
+    "tags": "C# / UNITY / NETCDF",
+    "summary": "介绍NetCDF科学数据格式的结构，并提供在C#和Unity环境中使用ScientificDataSet库读取.nc文件的详细步骤和代码示例。"
+  },
+  {
     "id": "unity_009",
     "title": "深度测试：Unity渲染管线的关键环节",
     "date": "2025.11.21",
