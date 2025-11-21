@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODE PHANTOM | 游戏开发笔记</title>
+    <style>
+        /* --- 0. 字体与基础变量 --- */
+        @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+SC:wght@400;700;900&display=swap');
+
+        :root {
+            --p5-red: #D20505;
+            --p5-black: #111;
+            --p5-grey: #222;
+            --p5-white: #fafafa;
+            --p5-yellow: #fce100;
+        }
+
+        body {
+            margin: 0;
+            background-color: #1a1a1a;
+            font-family: 'Noto Sans SC', sans-serif;
+            color: var(--p5-black);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- 1. 背景动效层 (Background FX) --- */
+        .bg-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+            /* 确保不挡住点击 */
+        }
+
+        /* 动态元素通用 */
+        .shape {
+            position: absolute;
+            opacity: 0.15;
+        }
+
+        /* 星星形状 */
+        .star-shape {
+            color: var(--p5-white);
+            font-size: 2rem;
+            animation: floatRotate 10s infinite linear;
+        }
+
+        /* 红色多边形 */
+        .poly-shape {
+            width: 100px;
+            height: 100px;
+            background: var(--p5-red);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            animation: floatUp 15s infinite ease-in-out;
+        }
+
+        /* 波点纹理层 */
+        .pattern-overlay {
+            width: 200%;
+            height: 200%;
+            background-image: radial-gradient(#444 1px, transparent 1px);
+            background-size: 30px 30px;
+            position: absolute;
+            opacity: 0.1;
+            animation: patternScroll 60s linear infinite;
+        }
+
+        /* 动画定义 */
+        @keyframes floatRotate {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            50% {
+                transform: translate(50px, -50px) rotate(180deg);
+            }
+
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(120vh) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 0.3;
+            }
+
+            80% {
+                opacity: 0.3;
+            }
+
+            100% {
+                transform: translateY(-20vh) rotate(45deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        @keyframes patternScroll {
+            0% {
+                transform: translate(0, 0) rotate(-5deg);
+            }
+
+            100% {
+                transform: translate(-50px, -50px) rotate(-5deg);
+            }
+        }
+
+        /* --- 2. 顶部菜单 (Nav Menu) --- */
+        .top-nav {
+            background: var(--p5-black);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 5px solid var(--p5-red);
+            position: relative;
+            z-index: 100;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .brand-logo {
+            font-family: 'Bangers';
+            color: var(--p5-white);
+            font-size: 2.5rem;
+            text-decoration: none;
+            text-shadow: 3px 3px 0 var(--p5-red);
+            transform: rotate(-2deg);
+        }
+
+        .menu-list {
+            display: flex;
+            gap: 15px;
+        }
+
+        .menu-btn {
+            background: var(--p5-white);
+            color: var(--p5-black);
+            font-family: 'Bangers';
+            font-size: 1.4rem;
+            padding: 8px 25px;
+            text-decoration: none;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .menu-btn:hover {
+            background: var(--p5-red);
+            color: var(--p5-white);
+            transform: scale(1.1) rotate(2deg);
+            z-index: 10;
+        }
+
+        /* 选中状态 */
+        .menu-btn.active {
+            background: var(--p5-yellow);
+            color: black;
+            transform: scale(1.05);
+        }
+
+        /* --- 3. 页面主体布局 --- */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            display: flex;
+            gap: 40px;
+            padding: 0 20px;
+            flex: 1;
+            /* 让footer沉底 */
+            position: relative;
+            z-index: 10;
+        }
+
+        .content-area {
+            flex: 3;
+        }
+
+        .sidebar-area {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        /* --- 4. 博客列表 (Blog Posts) --- */
+        .post-entry {
+            background: var(--p5-white);
+            margin-bottom: 30px;
+            position: relative;
+            /* 更夸张的剪裁 */
+            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+            transition: transform 0.3s;
+        }
+
+        .post-entry:hover {
+            transform: translateX(10px);
+            /* 悬浮时向右突进 */
+        }
+
+        .post-entry::before {
+            /* 装饰黑条 */
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 10px;
+            background: var(--p5-black);
+        }
+
+        .post-content-wrap {
+            padding: 25px 30px 25px 40px;
+        }
+
+        .post-meta {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .post-tag {
+            background: var(--p5-yellow);
+            color: black;
+            padding: 0 5px;
+            margin-left: 10px;
+        }
+
+        .post-title {
+            font-size: 2rem;
+            margin: 5px 0 15px 0;
+            color: var(--p5-black);
+            font-weight: 900;
+            line-height: 1.2;
+        }
+
+        .post-title:hover {
+            color: var(--p5-red);
+            cursor: pointer;
+        }
+
+        .post-summary {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* --- 5. 简化版侧边栏 --- */
+        .widget-box {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid var(--p5-white);
+            color: var(--p5-white);
+            padding: 20px;
+            margin-bottom: 30px;
+            transform: rotate(-1deg);
+        }
+
+        .widget-title {
+            font-family: 'Bangers';
+            font-size: 1.5rem;
+            color: var(--p5-yellow);
+            border-bottom: 2px dashed #666;
+            padding-bottom: 5px;
+            margin-top: 0;
+        }
+
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tag-item {
+            background: var(--p5-red);
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .tag-item:hover {
+            background: var(--p5-white);
+            color: black;
+        }
+
+        .profile-mini {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-mini img {
+            width: 60px;
+            height: 60px;
+            border: 2px solid white;
+            object-fit: cover;
+        }
+
+        /* --- 6. 底部信息栏 (Footer) --- */
+        .footer-bar {
+            background: var(--p5-black);
+            color: var(--p5-white);
+            position: relative;
+            z-index: 100;
+            overflow: hidden;
+            border-top: 5px solid var(--p5-yellow);
+        }
+
+        /* 滚动文字 (Marquee) */
+        .marquee-wrap {
+            background: var(--p5-red);
+            color: white;
+            padding: 8px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            font-family: 'Bangers';
+            font-size: 1.2rem;
+            transform: skewX(-20deg);
+            border-bottom: 3px solid black;
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        .footer-info {
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links a {
+            color: #888;
+            margin-left: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--p5-yellow);
+        }
+
+        /* --- 手机适配 --- */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar-area {
+                order: 1;
+            }
+
+            /* 侧边栏沉底 */
+            .menu-list {
+                gap: 5px;
+            }
+
+            .menu-btn {
+                padding: 5px 10px;
+                font-size: 1rem;
+            }
+
+            .brand-logo {
+                font-size: 1.8rem;
+            }
+
+            .footer-info {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .footer-links a {
+                margin: 0 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-layer">
+        <div class="pattern-overlay"></div>
+        <div class="shape star-shape" style="top: 10%; left: 10%; animation-duration: 8s;">★</div>
+        <div class="shape star-shape" style="top: 50%; left: 80%; animation-duration: 12s; font-size: 1rem;">★</div>
+        <div class="shape star-shape" style="top: 80%; left: 20%; animation-duration: 15s; color: var(--p5-yellow);">★
+        </div>
+        <div class="shape poly-shape" style="left: 15%; animation-delay: 0s;"></div>
+        <div class="shape poly-shape" style="left: 75%; animation-delay: 5s; width: 50px; height: 50px;"></div>
+        <div class="shape poly-shape" style="left: 40%; animation-delay: 2s; background: var(--p5-yellow);"></div>
+    </div>
+
+    <nav class="top-nav">
+        <a href="#" class="brand-logo">CODE PHANTOM</a>
+        <div class="menu-list">
+            <a href="#" class="menu-btn active">HOME</a>
+            <a href="#" class="menu-btn">UNITY</a>
+            <a href="#" class="menu-btn">SHADER</a>
+            <a href="#" class="menu-btn">ABOUT</a>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <main class="content-area">
+
+            <article class="post-entry" onclick="location.href='post.html?id=unity_001'">
+                <div class="post-content-wrap">
+                    <div class="post-meta">2025.11.20 <span class="post-tag">AI DEV</span></div>
+                    <h2 class="post-title">Unity RTS 实战：基于 DDPG 的集群行为模拟</h2>
+                    <p class="post-summary">在军事推演项目中，普通的FSM已经无法满足需求。本文记录了如何训练 Python DDPG 神经网络并接入 Unity...</p>
+                </div>
+            </article>
+
+            <article class="post-entry" onclick="location.href='post.html?id=unity_002'">
+                <div class="post-content-wrap">
+                    <div class="post-meta">2025.10.15 <span class="post-tag">OPTIMIZATION</span></div>
+                    <h2 class="post-title">万物皆可池化：Addressing 大场景内存泄漏</h2>
+                    <p class="post-summary">当场景物体超过1万个时，GC峰值成为了噩梦。这是我在仿真项目中总结的一套基于Addressables的动态加载方案。</p>
+                </div>
+            </article>
+
+            <article class="post-entry" onclick="location.href='post.html?id=unity_003'">
+                <div class="post-content-wrap">
+                    <div class="post-meta">2025.09.01 <span class="post-tag">SHADER</span></div>
+                    <h2 class="post-title">URP 管线下的卡通渲染 (Toon Shader) 深度解析</h2>
+                    <p class="post-summary">复刻 P5 风格渲染？从 Shader Graph 到手写 HLSL，解析描边、Ramp贴图与边缘光的实现细节。</p>
+                </div>
+            </article>
+
+        </main>
+
+        <aside class="sidebar-area">
+
+            <div class="widget-box">
+                <div class="widget-title">OWNER</div>
+                <div class="profile-mini">
+                    <img src="照片.jpg" alt="Avatar">
+                    <div>
+                        <div style="font-weight:900; color:var(--p5-white);">又来</div>
+                        <div style="font-size:0.8rem; color:#aaa;">Unity Developer</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget-box">
+                <div class="widget-title">CATEGORIES</div>
+                <div class="tag-cloud">
+                    <a href="#" class="tag-item"># UNITY3D</a>
+                    <a href="#" class="tag-item"># CSHARP</a>
+                    <a href="#" class="tag-item"># SHADER</a>
+                    <a href="#" class="tag-item"># MULTIPLAYER</a>
+                    <a href="#" class="tag-item"># VR/AR</a>
+                </div>
+            </div>
+
+        </aside>
+    </div>
+
+    <footer class="footer-bar">
+        <div class="marquee-wrap">
+            <div class="marquee-content">
+                LATEST COMMIT: FIXED NETWORK SYNC BUG IN RTS PROJECT +++ NEW SHADER DEMO RELEASED ON GITHUB +++ LOOKING
+                FOR NEW OPPORTUNITIES +++
+            </div>
+        </div>
+
+        <div class="footer-info">
+            <div>
+                <span style="font-weight:900; color:var(--p5-yellow);">© 2025 LIU MINGLIANG.</span>
+                All code is compiled.
+            </div>
+            <div class="footer-links">
+                <a href="#">GITHUB</a>
+                <a href="#">EMAIL</a>
+                <a href="#">BLOG</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
