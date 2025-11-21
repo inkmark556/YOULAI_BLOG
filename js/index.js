@@ -64,12 +64,25 @@ function renderPage(page) {
     container.style.opacity = 0;
     postsToShow.forEach(post => {
         let tagsDisplay = Array.isArray(post.tags) ? post.tags.join(' / ') : post.tags;
+
+        // 注意：这里增加了 onclick="event.stopPropagation()" 防止点击按钮时触发卡片跳转
         const html = `
             <article class="post-entry" onclick="location.href='post.html?id=${post.id}'">
                 <div class="post-content-wrap">
                     <div class="post-meta">${post.date} <span class="post-tag">${tagsDisplay}</span></div>
                     <h2 class="post-title">${post.title}</h2>
                     <p class="post-summary">${post.summary}</p>
+                </div>
+                
+                <div class="card-actions">
+                    <button class="action-mini-btn btn-edit" 
+                        onclick="event.stopPropagation(); location.href='editor.html?id=${post.id}'">
+                        EDIT
+                    </button>
+                    <button class="action-mini-btn btn-del" 
+                        onclick="event.stopPropagation(); deletePost('${post.id}')">
+                        DELETE
+                    </button>
                 </div>
             </article>
         `;
@@ -112,4 +125,36 @@ function filterPosts(category) {
 
     // 重置到第一页并渲染
     renderPage(1);
+}
+
+// --- 删除文章（提升为全局函数，供按钮调用） ---
+async function deletePost(id) {
+    if (!confirm("ARE YOU SURE TO DELETE THIS LOG? (Irreversible)")) {
+        return;
+    }
+    try {
+        const res = await fetch('/api/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: id })
+        });
+        const result = await res.json();
+        if (result.success) {
+            // 删除成功，更新本地缓存并重新渲染
+            allPostsCache = allPostsCache.filter(p => p.id !== id);
+            // 如果当前页数据空了，且不是第一页，就往前翻
+            if (currentPage > 1) {
+                const totalPages = Math.ceil(allPostsCache.length / ITEMS_PER_PAGE);
+                if (currentPage > totalPages) currentPage = totalPages;
+            }
+            // 刷新当前分类的过滤列表
+            const currentCategory = document.querySelector('.menu-btn.active').id.replace('btn-', '').toUpperCase();
+            filterPosts(currentCategory === 'HOME' ? 'HOME' : currentCategory);
+        } else {
+            alert("DELETE FAILED: " + result.message);
+        }
+    } catch (err) {
+        alert("NETWORK ERROR");
+    }
+}
 }

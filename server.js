@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 
 const app = express();
 const PORT = 3000;
+const DEEPSEEK_API_KEY = "sk-25ca1265fd004d0fae0d7eeebf8c6d31";
 
 // 允许跨域和解析JSON
 app.use(cors());
@@ -17,7 +18,36 @@ app.use(express.static(__dirname));
 // 数据文件路径
 const POSTS_DIR = path.join(__dirname, 'posts');
 const LIST_FILE = path.join(__dirname, 'posts.json');
+// --- 新增：删除文章接口 (server.js) ---
+app.post('/api/delete', (req, res) => {
+    try {
+        const { id } = req.body;
+        if (!id) return res.json({ success: false, message: "No ID provided" });
 
+        // 1. 读取 posts.json
+        let posts = [];
+        if (fs.existsSync(LIST_FILE)) {
+            posts = JSON.parse(fs.readFileSync(LIST_FILE, 'utf8'));
+        }
+
+        // 2. 过滤掉要删除的文章
+        const newPosts = posts.filter(p => p.id !== id);
+        fs.writeFileSync(LIST_FILE, JSON.stringify(newPosts, null, 2), 'utf8');
+
+        // 3. 删除对应的 .md 文件
+        const filePath = path.join(POSTS_DIR, `${id}.md`);
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+        }
+
+        console.log(`[DELETED] Article ${id} removed.`);
+        res.json({ success: true });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "DELETE FAILED" });
+    }
+});
 // --- 核心功能：接收文章上传 ---
 app.post('/api/upload', (req, res) => {
     try {
@@ -64,13 +94,6 @@ app.post('/api/upload', (req, res) => {
         res.status(500).json({ success: false, message: 'SERVER ERROR' });
     }
 });
-// server.js - DeepSeek 接入版
-
-// ... (前面的引入保持不变)
-
-// ★★★ 请在这里填入你的 DeepSeek API Key ★★★
-const DEEPSEEK_API_KEY = "sk-25ca1265fd004d0fae0d7eeebf8c6d31";
-
 // --- AI 辅助生成接口 (接入 DeepSeek) ---
 app.post('/api/ai-generate', async (req, res) => {
     try {
