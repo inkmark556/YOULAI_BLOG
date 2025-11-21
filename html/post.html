@@ -165,7 +165,7 @@
     </div>
 
     <nav class="mini-nav">
-        <a href="index.html" class="home-btn"><span>◄ PHANTOM THIEVES</span></a>
+        <a href="../index.html" class="home-btn"><span>◄ PHANTOM THIEVES</span></a>
     </nav>
 
     <div id="error-container" style="display:none;"></div>
@@ -208,7 +208,7 @@
             }
 
             // 动态请求 MD 文件
-            fetch(`posts/${postId}.md`)
+            fetch(`../posts/${postId}.md`)
                 .then(response => {
                     if (!response.ok) throw new Error("FILE NOT FOUND (404)");
                     return response.text();
@@ -229,7 +229,7 @@
                         const src = img.getAttribute('src');
                         // 如果不是网络图片(http)且不是绝对路径(/)
                         if (!src.startsWith('http') && !src.startsWith('//') && !src.startsWith('/')) {
-                            img.src = 'posts/' + src; 
+                            img.src = '../posts/' + src; 
                         }
                     });
 

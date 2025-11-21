@@ -60,7 +60,8 @@ function insertText(before, after) {
     input.dispatchEvent(new Event('input'));
 }
 
-// 发布/更新逻辑
+// editor.js 中的 publish 函数
+
 async function publish() {
     let finalId;
     if (currentEditingId) {
@@ -70,6 +71,7 @@ async function publish() {
         const timestamp = now.toISOString().replace(/[-T:.]/g, '').slice(0, 14);
         finalId = `post_${timestamp}`;
     }
+
     const data = {
         id: finalId,
         title: document.getElementById('in-title').value,
@@ -78,10 +80,12 @@ async function publish() {
         summary: document.getElementById('in-summary').value,
         content: input.value
     };
-    if(!data.title || !data.content) {
-        alert("MISSING DATA: Title and Content are required.");
+
+    if (!data.title || !data.content) {
+        Phantom.alert("MISSING DATA: Title and Content are required.", "DATA ERROR");
         return;
     }
+
     try {
         const res = await fetch('/api/upload', {
             method: 'POST',
@@ -89,19 +93,22 @@ async function publish() {
             body: JSON.stringify(data)
         });
         const result = await res.json();
-        if(result.success) {
+
+        if (result.success) {
             const msg = currentEditingId ? "LOG UPDATED SUCCESSFULLY!" : "NEW LOG CREATED!";
-            if(confirm(msg + "\nReturn to Home?")) {
+
+            // 使用 Phantom.confirm 询问是否返回主页
+            Phantom.confirm(msg + "\nReturn to Home?", () => {
                 window.location.href = 'index.html';
-            }
+            }, "MISSION COMPLETE");
+
         } else {
-            alert("ERROR: " + result.message);
+            Phantom.alert("ERROR: " + result.message, "SERVER ERROR");
         }
     } catch (err) {
-        alert("NETWORK ERROR: Is server.js running?");
+        Phantom.alert("NETWORK ERROR: Is server.js running?", "CONNECTION LOST");
     }
 }
-
 // AI 自动填充逻辑（保持原样）
 async function aiAutoFill() {
     const content = input.value;
@@ -109,14 +116,14 @@ async function aiAutoFill() {
     if (content.length < 10) { alert("TOO SHORT"); return; }
     btn.innerHTML = "Thinking..."; btn.disabled = true;
     try {
-        const res = await fetch('/api/ai-generate', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({content}) });
+        const res = await fetch('/api/ai-generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content }) });
         const result = await res.json();
-        if(result.success) {
-            if(!document.getElementById('in-title').value) document.getElementById('in-title').value = result.data.title;
-            if(!document.getElementById('in-summary').value) document.getElementById('in-summary').value = result.data.summary;
-            if(!document.getElementById('in-tags').value) document.getElementById('in-tags').value = result.data.tags;
+        if (result.success) {
+            if (!document.getElementById('in-title').value) document.getElementById('in-title').value = result.data.title;
+            if (!document.getElementById('in-summary').value) document.getElementById('in-summary').value = result.data.summary;
+            if (!document.getElementById('in-tags').value) document.getElementById('in-tags').value = result.data.tags;
             btn.innerHTML = "OK!";
         } else { alert("AI ERROR"); }
-    } catch(e) { alert("NET ERROR"); }
+    } catch (e) { alert("NET ERROR"); }
     btn.disabled = false; btn.innerHTML = "⚡ AI GEN";
 }
