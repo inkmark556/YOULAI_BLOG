@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CODE PHANTOM | 游戏开发笔记</title>
     <style>
+        /* ========================================= */
+        /* PART 1: 原有的核心样式           */
+        /* ========================================= */
+        
         /* --- 0. 字体与基础变量 --- */
         @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+SC:wght@400;700;900&display=swap');
 
@@ -38,23 +42,19 @@
             z-index: -1;
             overflow: hidden;
             pointer-events: none;
-            /* 确保不挡住点击 */
         }
 
-        /* 动态元素通用 */
         .shape {
             position: absolute;
             opacity: 0.15;
         }
 
-        /* 星星形状 */
         .star-shape {
             color: var(--p5-white);
             font-size: 2rem;
             animation: floatRotate 10s infinite linear;
         }
 
-        /* 红色多边形 */
         .poly-shape {
             width: 100px;
             height: 100px;
@@ -63,7 +63,6 @@
             animation: floatUp 15s infinite ease-in-out;
         }
 
-        /* 波点纹理层 */
         .pattern-overlay {
             width: 200%;
             height: 200%;
@@ -74,49 +73,22 @@
             animation: patternScroll 60s linear infinite;
         }
 
-        /* 动画定义 */
         @keyframes floatRotate {
-            0% {
-                transform: translate(0, 0) rotate(0deg);
-            }
-
-            50% {
-                transform: translate(50px, -50px) rotate(180deg);
-            }
-
-            100% {
-                transform: translate(0, 0) rotate(360deg);
-            }
+            0% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(50px, -50px) rotate(180deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
         }
 
         @keyframes floatUp {
-            0% {
-                transform: translateY(120vh) rotate(0deg) scale(0.8);
-                opacity: 0;
-            }
-
-            20% {
-                opacity: 0.3;
-            }
-
-            80% {
-                opacity: 0.3;
-            }
-
-            100% {
-                transform: translateY(-20vh) rotate(45deg) scale(1.2);
-                opacity: 0;
-            }
+            0% { transform: translateY(120vh) rotate(0deg) scale(0.8); opacity: 0; }
+            20% { opacity: 0.3; }
+            80% { opacity: 0.3; }
+            100% { transform: translateY(-20vh) rotate(45deg) scale(1.2); opacity: 0; }
         }
 
         @keyframes patternScroll {
-            0% {
-                transform: translate(0, 0) rotate(-5deg);
-            }
-
-            100% {
-                transform: translate(-50px, -50px) rotate(-5deg);
-            }
+            0% { transform: translate(0, 0) rotate(-5deg); }
+            100% { transform: translate(-50px, -50px) rotate(-5deg); }
         }
 
         /* --- 2. 顶部菜单 (Nav Menu) --- */
@@ -154,7 +126,7 @@
             padding: 8px 25px;
             text-decoration: none;
             clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.2s;
             position: relative;
         }
 
@@ -165,7 +137,6 @@
             z-index: 10;
         }
 
-        /* 选中状态 */
         .menu-btn.active {
             background: var(--p5-yellow);
             color: black;
@@ -180,13 +151,13 @@
             gap: 40px;
             padding: 0 20px;
             flex: 1;
-            /* 让footer沉底 */
             position: relative;
             z-index: 10;
         }
 
         .content-area {
             flex: 3;
+            min-height: 500px; /* 避免没文章时塌陷 */
         }
 
         .sidebar-area {
@@ -194,29 +165,24 @@
             min-width: 250px;
         }
 
-        /* --- 4. 博客列表 (Blog Posts) --- */
+        /* --- 4. 博客列表卡片样式 --- */
         .post-entry {
             background: var(--p5-white);
             margin-bottom: 30px;
             position: relative;
-            /* 更夸张的剪裁 */
             clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
             transition: transform 0.3s;
+            cursor: pointer;
         }
 
         .post-entry:hover {
             transform: translateX(10px);
-            /* 悬浮时向右突进 */
         }
 
         .post-entry::before {
-            /* 装饰黑条 */
             content: "";
             position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 10px;
+            left: 0; top: 0; bottom: 0; width: 10px;
             background: var(--p5-black);
         }
 
@@ -248,7 +214,6 @@
 
         .post-title:hover {
             color: var(--p5-red);
-            cursor: pointer;
         }
 
         .post-summary {
@@ -257,7 +222,7 @@
             color: #333;
         }
 
-        /* --- 5. 简化版侧边栏 --- */
+        /* --- 5. 侧边栏样式 --- */
         .widget-box {
             background: rgba(0, 0, 0, 0.6);
             border: 2px solid var(--p5-white);
@@ -320,7 +285,6 @@
             border-top: 5px solid var(--p5-yellow);
         }
 
-        /* 滚动文字 (Marquee) */
         .marquee-wrap {
             background: var(--p5-red);
             color: white;
@@ -339,13 +303,8 @@
         }
 
         @keyframes marquee {
-            0% {
-                transform: translateX(100%);
-            }
-
-            100% {
-                transform: translateX(-100%);
-            }
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
         }
 
         .footer-info {
@@ -371,37 +330,127 @@
 
         /* --- 手机适配 --- */
         @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
+            .container { flex-direction: column; }
+            .sidebar-area { order: 1; }
+            .menu-list { gap: 5px; }
+            .menu-btn { padding: 5px 10px; font-size: 1rem; }
+            .brand-logo { font-size: 1.8rem; }
+            .footer-info { flex-direction: column; text-align: center; gap: 15px; }
+            .editor-panel { width: 95%; padding: 15px; }
+        }
 
-            .sidebar-area {
-                order: 1;
-            }
+        /* ========================================= */
+        /* PART 2: 新增的隐藏编辑器样式         */
+        /* ========================================= */
+        
+        #secret-editor {
+            position: fixed; 
+            top: -120%; /* 默认隐藏在屏幕上方 */
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(0,0,0,0.95); 
+            z-index: 9999;
+            transition: top 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* 弹性动画 */
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+        }
+        
+        #secret-editor.active { 
+            top: 0; /* 激活时滑下来 */
+        }
 
-            /* 侧边栏沉底 */
-            .menu-list {
-                gap: 5px;
-            }
+        .editor-panel {
+            background: var(--p5-white); 
+            width: 800px; 
+            max-width: 90%; 
+            padding: 30px;
+            clip-path: polygon(5% 0, 100% 0, 100% 95%, 95% 100%, 0 100%, 0 5%);
+            border: 5px solid var(--p5-red); 
+            box-shadow: 0 0 50px var(--p5-red);
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px;
+            position: relative;
+        }
 
-            .menu-btn {
-                padding: 5px 10px;
-                font-size: 1rem;
-            }
+        /* 装饰角标 */
+        .editor-panel::after {
+            content: "CONFIDENTIAL";
+            position: absolute;
+            bottom: -20px; right: -20px;
+            background: var(--p5-yellow);
+            color: black;
+            font-family: 'Bangers';
+            font-size: 1.5rem;
+            padding: 5px 20px;
+            transform: rotate(-5deg);
+        }
 
-            .brand-logo {
-                font-size: 1.8rem;
-            }
+        .editor-title { 
+            font-family: 'Bangers'; 
+            font-size: 3rem; 
+            color: var(--p5-red); 
+            text-align: center; 
+            margin: 0; 
+            text-shadow: 2px 2px 0 black;
+        }
+        
+        .p5-input {
+            background: #eee; 
+            border: 2px solid #333; 
+            padding: 10px; 
+            font-family: 'Noto Sans SC'; 
+            font-weight: bold;
+            font-size: 1rem; 
+            outline: none; 
+            transform: skewX(-5deg);
+            transition: 0.2s;
+        }
+        
+        .p5-input:focus { 
+            background: var(--p5-yellow); 
+            border-color: var(--p5-red); 
+            transform: skewX(-5deg) scale(1.02);
+        }
 
-            .footer-info {
-                flex-direction: column;
-                text-align: center;
-                gap: 15px;
-            }
+        textarea.p5-input { 
+            height: 300px; 
+            transform: none; 
+            resize: vertical; 
+            font-family: 'Consolas', monospace; 
+            font-size: 0.9rem;
+        }
 
-            .footer-links a {
-                margin: 0 10px;
-            }
+        .editor-btn-group { 
+            display: flex; 
+            gap: 20px; 
+            justify-content: flex-end; 
+            margin-top: 10px; 
+        }
+        
+        .p5-btn {
+            background: var(--p5-black); 
+            color: var(--p5-white); 
+            padding: 10px 40px; 
+            font-family: 'Bangers'; 
+            font-size: 1.5rem;
+            border: none; 
+            cursor: pointer; 
+            transform: skewX(-10deg); 
+            transition: 0.2s;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+        }
+        
+        .p5-btn:hover { 
+            background: var(--p5-red); 
+            transform: skewX(-10deg) scale(1.1) rotate(2deg); 
+            box-shadow: 5px 5px 0 rgba(0,0,0,0.5);
+        }
+        
+        .p5-btn.cancel { 
+            background: #666; 
         }
     </style>
 </head>
@@ -412,8 +461,7 @@
         <div class="pattern-overlay"></div>
         <div class="shape star-shape" style="top: 10%; left: 10%; animation-duration: 8s;">★</div>
         <div class="shape star-shape" style="top: 50%; left: 80%; animation-duration: 12s; font-size: 1rem;">★</div>
-        <div class="shape star-shape" style="top: 80%; left: 20%; animation-duration: 15s; color: var(--p5-yellow);">★
-        </div>
+        <div class="shape star-shape" style="top: 80%; left: 20%; animation-duration: 15s; color: var(--p5-yellow);">★</div>
         <div class="shape poly-shape" style="left: 15%; animation-delay: 0s;"></div>
         <div class="shape poly-shape" style="left: 75%; animation-delay: 5s; width: 50px; height: 50px;"></div>
         <div class="shape poly-shape" style="left: 40%; animation-delay: 2s; background: var(--p5-yellow);"></div>
@@ -430,37 +478,11 @@
     </nav>
 
     <div class="container">
-
-        <main class="content-area">
-
-            <article class="post-entry" onclick="location.href='post.html?id=unity_001'">
-                <div class="post-content-wrap">
-                    <div class="post-meta">2025.11.20 <span class="post-tag">AI DEV</span></div>
-                    <h2 class="post-title">Unity RTS 实战：基于 DDPG 的集群行为模拟</h2>
-                    <p class="post-summary">在军事推演项目中，普通的FSM已经无法满足需求。本文记录了如何训练 Python DDPG 神经网络并接入 Unity...</p>
-                </div>
-            </article>
-
-            <article class="post-entry" onclick="location.href='post.html?id=unity_002'">
-                <div class="post-content-wrap">
-                    <div class="post-meta">2025.10.15 <span class="post-tag">OPTIMIZATION</span></div>
-                    <h2 class="post-title">万物皆可池化：Addressing 大场景内存泄漏</h2>
-                    <p class="post-summary">当场景物体超过1万个时，GC峰值成为了噩梦。这是我在仿真项目中总结的一套基于Addressables的动态加载方案。</p>
-                </div>
-            </article>
-
-            <article class="post-entry" onclick="location.href='post.html?id=unity_003'">
-                <div class="post-content-wrap">
-                    <div class="post-meta">2025.09.01 <span class="post-tag">SHADER</span></div>
-                    <h2 class="post-title">URP 管线下的卡通渲染 (Toon Shader) 深度解析</h2>
-                    <p class="post-summary">复刻 P5 风格渲染？从 Shader Graph 到手写 HLSL，解析描边、Ramp贴图与边缘光的实现细节。</p>
-                </div>
-            </article>
-
+        <main class="content-area" id="blog-list-container">
+            <h2 style="color:white; font-family:'Bangers'; text-align:center; margin-top:50px;">INITIALIZING PHANTOM NETWORK...</h2>
         </main>
 
         <aside class="sidebar-area">
-
             <div class="widget-box">
                 <div class="widget-title">OWNER</div>
                 <div class="profile-mini">
@@ -482,15 +504,17 @@
                     <a href="#" class="tag-item"># VR/AR</a>
                 </div>
             </div>
-
+            
+            <div style="background:var(--p5-black); color:#666; padding:10px; margin-top:20px; font-size:0.8rem; text-align:center; border:1px dashed #444;">
+                 CMD: A-B-A-B-UP-DOWN
+            </div>
         </aside>
     </div>
 
     <footer class="footer-bar">
         <div class="marquee-wrap">
             <div class="marquee-content">
-                LATEST COMMIT: FIXED NETWORK SYNC BUG IN RTS PROJECT +++ NEW SHADER DEMO RELEASED ON GITHUB +++ LOOKING
-                FOR NEW OPPORTUNITIES +++
+                LATEST COMMIT: FIXED NETWORK SYNC BUG IN RTS PROJECT +++ NEW SHADER DEMO RELEASED ON GITHUB +++ LOOKING FOR NEW OPPORTUNITIES +++
             </div>
         </div>
 
@@ -507,6 +531,141 @@
         </div>
     </footer>
 
+    /* PART 3: 隐藏的编辑器 (Hidden Editor)      */
+    /* ========================================= */
+    <div id="secret-editor">
+        <div class="editor-panel">
+            <h2 class="editor-title">PHANTOM BROADCAST</h2>
+            
+            <input type="text" id="in-id" class="p5-input" placeholder="POST ID (e.g. unity_004)">
+            <input type="text" id="in-title" class="p5-input" placeholder="TITLE">
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="in-date" class="p5-input" placeholder="DATE (YYYY.MM.DD)" style="flex:1">
+                <input type="text" id="in-tags" class="p5-input" placeholder="TAG (e.g. UNITY)" style="flex:1">
+            </div>
+            <input type="text" id="in-summary" class="p5-input" placeholder="SUMMARY">
+            <textarea id="in-content" class="p5-input" placeholder="# MARKDOWN CONTENT HERE..."></textarea>
+
+            <div class="editor-btn-group">
+                <button class="p5-btn cancel" onclick="toggleEditor()">ESCAPE</button>
+                <button class="p5-btn" onclick="uploadPost()">SEND CARD</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. 初始化：加载文章列表
+        document.addEventListener('DOMContentLoaded', loadPosts);
+
+        async function loadPosts() {
+            const container = document.getElementById('blog-list-container');
+            try {
+                // 请求 posts.json (确保你已经创建了这个文件)
+                const res = await fetch('posts.json');
+                if(!res.ok) throw new Error("JSON NOT FOUND");
+                
+                const posts = await res.json();
+                
+                container.innerHTML = ''; // 清空加载提示
+                
+                posts.forEach(post => {
+                    const html = `
+                        <article class="post-entry" onclick="location.href='post.html?id=${post.id}'">
+                            <div class="post-content-wrap">
+                                <div class="post-meta">${post.date} <span class="post-tag">${post.tags}</span></div>
+                                <h2 class="post-title">${post.title}</h2>
+                                <p class="post-summary">${post.summary}</p>
+                            </div>
+                        </article>
+                    `;
+                    container.innerHTML += html;
+                });
+            } catch (err) {
+                // 如果没有 posts.json 或者服务器没开，显示错误提示
+                container.innerHTML = `
+                    <div style="background:var(--p5-black); color:white; padding:20px; border:2px solid red; transform:rotate(-2deg);">
+                        <h2 style="font-family:'Bangers'; color:red;">CONNECTION ERROR</h2>
+                        <p>无法连接到 Phantom Network (posts.json).</p>
+                        <p>请确保已运行: node server.js</p>
+                    </div>
+                `;
+            }
+        }
+
+        // 2. 作弊码监听 (A B A B 上 下 上 下)
+        // 顺序：A -> B -> A -> B -> ArrowUp -> ArrowDown -> ArrowUp -> ArrowDown
+        const secretCode = ['a', 'b', 'a', 'b', 'ArrowUp', 'ArrowDown', 'ArrowUp', 'ArrowDown'];
+        let keyIndex = 0;
+
+        document.addEventListener('keydown', (e) => {
+            const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+            
+            if (key === secretCode[keyIndex]) {
+                keyIndex++;
+                if (keyIndex === secretCode.length) {
+                    toggleEditor(); // 触发！
+                    keyIndex = 0; // 重置
+                }
+            } else {
+                keyIndex = 0; // 输错重置
+            }
+        });
+
+        function toggleEditor() {
+            const editor = document.getElementById('secret-editor');
+            editor.classList.toggle('active');
+            
+            // 自动填充今天的日期
+            if (editor.classList.contains('active')) {
+                const now = new Date();
+                const dateStr = now.toISOString().split('T')[0].replace(/-/g, '.');
+                document.getElementById('in-date').value = dateStr;
+            }
+        }
+
+        // 3. 上传逻辑
+        async function uploadPost() {
+            const data = {
+                id: document.getElementById('in-id').value,
+                title: document.getElementById('in-title').value,
+                date: document.getElementById('in-date').value,
+                tags: document.getElementById('in-tags').value,
+                summary: document.getElementById('in-summary').value,
+                content: document.getElementById('in-content').value
+            };
+
+            if(!data.id || !data.title || !data.content) {
+                alert("INFO MISSING! (ID, Title & Content required)");
+                return;
+            }
+
+            try {
+                // 发送给 Node.js 后端
+                const res = await fetch('/api/upload', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await res.json();
+                if (result.success) {
+                    alert("PHANTOM THIEVES: MESSAGE SENT!");
+                    toggleEditor(); // 关闭界面
+                    loadPosts(); // 刷新列表，立即显示新文章
+                    
+                    // 清空输入框
+                    document.getElementById('in-id').value = '';
+                    document.getElementById('in-title').value = '';
+                    document.getElementById('in-content').value = '';
+                    document.getElementById('in-summary').value = '';
+                } else {
+                    alert("ERROR: " + result.message);
+                }
+            } catch (err) {
+                alert("NETWORK ERROR: Make sure server.js is running!");
+            }
+        }
+    </script>
 </body>
 
 </html>

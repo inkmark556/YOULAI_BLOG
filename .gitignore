@@ -1,0 +1,43 @@
+# Node.js 项目忽略文件
+# 忽略 node_modules 依赖包
+node_modules/
+
+# 忽略日志文件
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 忽略环境变量文件
+.env
+.env.local
+.env.*.local
+
+# 忽略操作系统生成的文件
+.DS_Store
+Thumbs.db
+
+# 忽略 VS Code 编辑器配置
+.vscode/
+
+# 忽略打包输出
+/dist/
+/build/
+
+# 忽略临时文件
+*.swp
+*.swo
+
+# 忽略覆盖率报告
+coverage/
+
+# 忽略本地配置
+*.local.js
+*.local.json
+
+# 忽略静态资源缓存
+.cache/
+
+# 忽略其他常见文件
+*.log
+
+# 可根据实际项目需求补充更多规则
