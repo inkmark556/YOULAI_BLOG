@@ -17,14 +17,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 // 加载已有文章
 async function loadPostForEdit(id) {
     try {
-        const listRes = await fetch('posts.json');
+        const listRes = await fetch('/posts.json');
         const posts = await listRes.json();
         const meta = posts.find(p => p.id === id);
         if (!meta) {
             alert("POST NOT FOUND IN INDEX!");
             return;
         }
-        const contentRes = await fetch(`posts/${id}.md`);
+        const contentRes = await fetch(`/posts/${id}.md`);
         const content = await contentRes.text();
         document.getElementById('in-title').value = meta.title;
         document.getElementById('in-date').value = meta.date;
@@ -95,13 +95,11 @@ async function publish() {
         const result = await res.json();
 
         if (result.success) {
-            const msg = currentEditingId ? "LOG UPDATED SUCCESSFULLY!" : "NEW LOG CREATED!";
-
-            // 使用 Phantom.confirm 询问是否返回主页
+            const msg = currentEditingId ? "LOG UPDATED!" : "NEW LOG CREATED!";
             Phantom.confirm(msg + "\nReturn to Home?", () => {
-                window.location.href = 'index.html';
+                // 修改为返回上一级 ../index.html
+                window.location.href = '../index.html';
             }, "MISSION COMPLETE");
-
         } else {
             Phantom.alert("ERROR: " + result.message, "SERVER ERROR");
         }

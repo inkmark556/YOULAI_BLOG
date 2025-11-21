@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LOADING... | CODE PHANTOM</title>
-    
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+SC:wght@400;700;900&display=swap');
     </style>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css"
+        rel="stylesheet" />
 
     <style>
         /* --- 基础变量 --- */
@@ -35,87 +37,200 @@
 
         /* --- Loading --- */
         #loading-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--p5-black); z-index: 9999;
-            display: flex; justify-content: center; align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--p5-black);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             transition: opacity 0.5s;
         }
+
         .loading-text {
-            font-family: 'Bangers'; color: var(--p5-white); font-size: 4rem;
-            transform: rotate(-5deg); animation: pulse 1s infinite;
+            font-family: 'Bangers';
+            color: var(--p5-white);
+            font-size: 4rem;
+            transform: rotate(-5deg);
+            animation: pulse 1s infinite;
         }
-        @keyframes pulse { 50% { transform: scale(1.1) rotate(-5deg); color: var(--p5-red); } }
+
+        @keyframes pulse {
+            50% {
+                transform: scale(1.1) rotate(-5deg);
+                color: var(--p5-red);
+            }
+        }
 
         /* --- 导航 --- */
         .mini-nav {
-            background: var(--p5-black); height: 60px; display: flex; align-items: center; padding: 0 30px;
-            border-bottom: 4px solid var(--p5-red); position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: var(--p5-black);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            border-bottom: 4px solid var(--p5-red);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
         }
+
         .home-btn {
-            color: var(--p5-white); text-decoration: none; font-family: 'Bangers'; font-size: 1.4rem; display: flex; align-items: center;
+            color: var(--p5-white);
+            text-decoration: none;
+            font-family: 'Bangers';
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
         }
-        .home-btn:hover { color: var(--p5-yellow); }
+
+        .home-btn:hover {
+            color: var(--p5-yellow);
+        }
 
         /* --- 布局 --- */
         .layout-container {
-            max-width: 1400px; margin: 100px auto 40px; display: flex; gap: 40px; padding: 0 20px;
-            opacity: 0; transition: opacity 0.5s;
+            max-width: 1400px;
+            margin: 100px auto 40px;
+            display: flex;
+            gap: 40px;
+            padding: 0 20px;
+            opacity: 0;
+            transition: opacity 0.5s;
         }
 
         /* 侧边栏 */
         .toc-sidebar {
-            width: 280px; flex-shrink: 0; position: sticky; top: 100px; max-height: calc(100vh - 140px);
-            overflow-y: auto; background: rgba(0,0,0,0.8); border: 2px solid var(--p5-white); padding: 20px;
+            width: 280px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 100px;
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--p5-white);
+            padding: 20px;
             clip-path: polygon(0 0, 100% 0, 100% 95%, 90% 100%, 0 100%);
         }
-        .toc-title { font-family: 'Bangers'; color: var(--p5-red); font-size: 1.8rem; margin: 0 0 15px 0; border-bottom: 2px dashed #666; }
-        #toc-list { list-style: none; padding: 0; margin: 0; }
-        #toc-list a {
-            display: block; color: #aaa; text-decoration: none; font-size: 0.9rem; font-weight: bold; padding: 5px 10px;
-            border-left: 3px solid transparent; transition: 0.2s; transform: skewX(-5deg);
+
+        .toc-title {
+            font-family: 'Bangers';
+            color: var(--p5-red);
+            font-size: 1.8rem;
+            margin: 0 0 15px 0;
+            border-bottom: 2px dashed #666;
         }
-        #toc-list a:hover, #toc-list a.active { color: black; background: var(--p5-yellow); border-left: 5px solid var(--p5-red); }
-        #toc-list .toc-h3 { margin-left: 15px; font-size: 0.85rem; }
+
+        #toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #toc-list a {
+            display: block;
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-left: 3px solid transparent;
+            transition: 0.2s;
+            transform: skewX(-5deg);
+        }
+
+        #toc-list a:hover,
+        #toc-list a.active {
+            color: black;
+            background: var(--p5-yellow);
+            border-left: 5px solid var(--p5-red);
+        }
+
+        #toc-list .toc-h3 {
+            margin-left: 15px;
+            font-size: 0.85rem;
+        }
 
         /* 正文区 */
         .article-main {
-            flex: 1; min-width: 0; background: var(--p5-paper); padding: 60px 80px;
-            box-shadow: 10px 10px 0 var(--p5-black); border-top: 5px solid var(--p5-black);
+            flex: 1;
+            min-width: 0;
+            background: var(--p5-paper);
+            padding: 60px 80px;
+            box-shadow: 10px 10px 0 var(--p5-black);
+            border-top: 5px solid var(--p5-black);
         }
 
         /* --- Markdown 渲染样式 --- */
-        .markdown-body h1 { font-size: 2.5rem; border-bottom: 4px solid var(--p5-black); padding-bottom: 10px; margin-top: 0; }
-        .markdown-body h2 { font-size: 1.8rem; margin-top: 50px; color: var(--p5-red); font-weight: 900; }
-        .markdown-body h3 { font-size: 1.4rem; margin-top: 30px; border-left: 5px solid var(--p5-yellow); padding-left: 10px; background: #f9f9f9; }
-        .markdown-body p { line-height: 1.8; margin-bottom: 20px; font-size: 1.05rem; }
-        .markdown-body blockquote { background: #222; color: #ddd; border-left: 6px solid var(--p5-red); padding: 15px 20px; margin: 20px 0; font-style: italic; }
-        
+        .markdown-body h1 {
+            font-size: 2.5rem;
+            border-bottom: 4px solid var(--p5-black);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .markdown-body h2 {
+            font-size: 1.8rem;
+            margin-top: 50px;
+            color: var(--p5-red);
+            font-weight: 900;
+        }
+
+        .markdown-body h3 {
+            font-size: 1.4rem;
+            margin-top: 30px;
+            border-left: 5px solid var(--p5-yellow);
+            padding-left: 10px;
+            background: #f9f9f9;
+        }
+
+        .markdown-body p {
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+        }
+
+        .markdown-body blockquote {
+            background: #222;
+            color: #ddd;
+            border-left: 6px solid var(--p5-red);
+            padding: 15px 20px;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
         /* 图片渲染优化 */
-        .markdown-body img { 
-            max-width: 100%; 
-            border: 3px solid black; 
-            display: block; 
-            margin: 20px auto; 
-            box-shadow: 5px 5px 0 rgba(0,0,0,0.2);
+        .markdown-body img {
+            max-width: 100%;
+            border: 3px solid black;
+            display: block;
+            margin: 20px auto;
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2);
         }
 
         /* 代码块样式 */
-        .markdown-body pre { 
-            background: #1a1a1a !important; 
-            border: 1px solid #444; 
-            border-radius: 0; 
-            padding: 20px !important; 
-            margin: 20px 0; 
+        .markdown-body pre {
+            background: #1a1a1a !important;
+            border: 1px solid #444;
+            border-radius: 0;
+            padding: 20px !important;
+            margin: 20px 0;
         }
 
         /* --- P5 风格的代码复制按钮 (魔改 Prism Toolbar) --- */
-        div.code-toolbar > .toolbar {
-            opacity: 1 !important; /* 始终显示 */
+        div.code-toolbar>.toolbar {
+            opacity: 1 !important;
+            /* 始终显示 */
             top: -10px;
             right: 10px;
         }
 
-        div.code-toolbar > .toolbar > .toolbar-item > button {
+        div.code-toolbar>.toolbar>.toolbar-item>button {
             background: var(--p5-red) !important;
             color: white !important;
             border: 2px solid black !important;
@@ -130,19 +245,36 @@
             cursor: pointer;
         }
 
-        div.code-toolbar > .toolbar > .toolbar-item > button:hover {
+        div.code-toolbar>.toolbar>.toolbar-item>button:hover {
             background: var(--p5-yellow) !important;
             color: black !important;
             transform: rotate(0deg) scale(1.1) !important;
         }
 
         /* 错误提示 */
-        .error-msg { color: var(--p5-white); text-align: center; font-size: 2rem; font-family: 'Bangers'; margin-top: 100px; }
+        .error-msg {
+            color: var(--p5-white);
+            text-align: center;
+            font-size: 2rem;
+            font-family: 'Bangers';
+            margin-top: 100px;
+        }
 
         @media (max-width: 1024px) {
-            .layout-container { flex-direction: column; }
-            .toc-sidebar { width: auto; position: static; height: auto; margin-bottom: 20px; }
-            .article-main { padding: 30px; }
+            .layout-container {
+                flex-direction: column;
+            }
+
+            .toc-sidebar {
+                width: auto;
+                position: static;
+                height: auto;
+                margin-bottom: 20px;
+            }
+
+            .article-main {
+                padding: 30px;
+            }
         }
     </style>
 
@@ -158,6 +290,7 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 </head>
+
 <body>
 
     <div id="loading-screen">
@@ -182,14 +315,15 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -208,7 +342,7 @@
             }
 
             // 动态请求 MD 文件
-            fetch(`../posts/${postId}.md`)
+            fetch(`/posts/${postId}.md`)
                 .then(response => {
                     if (!response.ok) throw new Error("FILE NOT FOUND (404)");
                     return response.text();
@@ -216,10 +350,10 @@
                 .then(text => {
                     // 1. 解析 MD -> HTML
                     renderArea.innerHTML = marked.parse(text);
-                    
+
                     // 设置标题
                     const h1 = renderArea.querySelector('h1');
-                    if(h1) document.title = h1.innerText + " | CODE PHANTOM";
+                    if (h1) document.title = h1.innerText + " | CODE PHANTOM";
 
                     // 2. 【新】修正图片路径
                     // MD里写 ![xx](img/1.png) -> 浏览器解析为 root/img/1.png (错)
@@ -229,7 +363,7 @@
                         const src = img.getAttribute('src');
                         // 如果不是网络图片(http)且不是绝对路径(/)
                         if (!src.startsWith('http') && !src.startsWith('//') && !src.startsWith('/')) {
-                            img.src = '../posts/' + src; 
+                            img.src = '/posts/' + src; // 使用绝对路径 /posts/
                         }
                     });
 
@@ -265,13 +399,13 @@
                 headers.forEach((header, index) => {
                     const id = 'header-' + index;
                     header.id = id;
-                    
+
                     const li = document.createElement('li');
                     const a = document.createElement('a');
                     a.href = '#' + id;
                     a.innerText = header.innerText;
                     if (header.tagName === 'H3') a.classList.add('toc-h3');
-                    
+
                     a.addEventListener('click', (e) => {
                         e.preventDefault();
                         document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
@@ -296,4 +430,5 @@
         });
     </script>
 </body>
+
 </html>

@@ -12,17 +12,14 @@ document.addEventListener('DOMContentLoaded', initApp);
 async function initApp() {
     const container = document.getElementById('blog-list-container');
     try {
-        // 请求 posts.json
         const res = await fetch('posts.json');
         if (!res.ok) throw new Error("JSON NOT FOUND");
-        
         allPostsCache = await res.json();
-        
+
         // 初始状态：显示所有文章
         currentFilteredPosts = allPostsCache;
         renderPage(1);
     } catch (err) {
-        console.error(err);
         container.innerHTML = `
             <div style="background:var(--p5-black); color:white; padding:20px; border:2px solid red; transform:rotate(-2deg);">
                 <h2 style="font-family:'Bangers'; color:red;">CONNECTION ERROR</h2>
@@ -44,17 +41,17 @@ function renderPage(page) {
     // 计算分页数据
     const totalPosts = currentFilteredPosts.length;
     const totalPages = Math.ceil(totalPosts / ITEMS_PER_PAGE);
-    
+
     // 边界检查
     if (page < 1) page = 1;
     if (page > totalPages && totalPages > 0) page = totalPages;
     currentPage = page;
 
-    container.innerHTML = ''; 
+    container.innerHTML = '';
 
     if (totalPosts === 0) {
         container.innerHTML = `<h2 style="color:white; font-family:'Bangers'; margin-top:50px;">NO DATA FOUND...</h2>`;
-        if(pagination) pagination.style.display = 'none';
+        pagination.style.display = 'none';
         return;
     }
 
@@ -67,47 +64,49 @@ function renderPage(page) {
     container.style.opacity = 0;
     postsToShow.forEach(post => {
         let tagsDisplay = Array.isArray(post.tags) ? post.tags.join(' / ') : post.tags;
-        
+
+        // 注意：这里增加了 onclick="event.stopPropagation()" 防止点击按钮时触发卡片跳转
+        // js/index.js 部分修改 (找到 renderPage 函数中的 html 模板部分)
+
+        // ...
         const html = `
-            <article class="post-entry" onclick="location.href='post.html?id=${post.id}'">
-                <div class="post-content-wrap">
-                    <div class="post-meta">${post.date} <span class="post-tag">${tagsDisplay}</span></div>
-                    <h2 class="post-title">${post.title}</h2>
-                    <p class="post-summary">${post.summary}</p>
-                </div>
-                
-                <div class="card-actions">
-                    <button class="action-mini-btn btn-edit" 
-                        onclick="event.stopPropagation(); location.href='editor.html?id=${post.id}'">
-                        EDIT
-                    </button>
-                    <button class="action-mini-btn btn-del" 
-                        onclick="event.stopPropagation(); deletePost('${post.id}')">
-                        DELETE
-                    </button>
-                </div>
-            </article>
-        `;
+    <article class="post-entry" onclick="location.href='html/post.html?id=${post.id}'">
+        <div class="post-content-wrap">
+            <div class="post-meta">${post.date} <span class="post-tag">${tagsDisplay}</span></div>
+            <h2 class="post-title">${post.title}</h2>
+            <p class="post-summary">${post.summary}</p>
+        </div>
+        
+        <div class="card-actions">
+            <button class="action-mini-btn btn-edit" 
+                onclick="event.stopPropagation(); location.href='html/editor.html?id=${post.id}'">
+                EDIT
+            </button>
+            <button class="action-mini-btn btn-del" 
+                onclick="event.stopPropagation(); deletePost('${post.id}')">
+                DELETE
+            </button>
+        </div>
+    </article>
+`;
+        // ...
         container.innerHTML += html;
     });
     // 淡入动画
     setTimeout(() => { container.style.opacity = 1; }, 50);
 
     // 更新分页控件状态
-    if (pagination) {
-        pagination.style.display = 'flex';
-        indicator.innerText = `${currentPage} / ${totalPages}`;
-        prevBtn.disabled = currentPage === 1;
-        nextBtn.disabled = currentPage === totalPages;
-    }
+    pagination.style.display = 'flex';
+    indicator.innerText = `${currentPage} / ${totalPages}`;
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage === totalPages;
 }
 
 // 3. 翻页功能
 function changePage(direction) {
     renderPage(currentPage + direction);
     // 翻页后滚动到顶部
-    const container = document.querySelector('.container');
-    if(container) container.scrollIntoView({ behavior: 'smooth' });
+    document.querySelector('.container').scrollIntoView({ behavior: 'smooth' });
 }
 
 // 4. 筛选功能
@@ -116,7 +115,7 @@ function filterPosts(category) {
     document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
     const activeBtnId = category === 'HOME' ? 'btn-home' : `btn-${category.toLowerCase()}`;
     const activeBtn = document.getElementById(activeBtnId);
-    if(activeBtn) activeBtn.classList.add('active');
+    if (activeBtn) activeBtn.classList.add('active');
 
     // 筛选逻辑
     if (category === 'HOME') {
@@ -132,49 +131,58 @@ function filterPosts(category) {
     renderPage(1);
 }
 
-// --- 删除文章 ---
+// js/index.js 中的 deletePost 函数
+
 async function deletePost(id) {
-    if (!confirm("ARE YOU SURE TO DELETE THIS LOG? (Irreversible)")) {
-        return;
-    }
+    // 使用 Phantom.confirm 替代原生 confirm
+    // 参数：提示文字，点击确定的回调函数，标题
+    Phantom.confirm("ARE YOU SURE TO DELETE THIS LOG? (Irreversible)", async () => {
 
-    try {
-        const res = await fetch('/api/delete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: id })
-        });
-        
-        const result = await res.json();
-        
-        if (result.success) {
-            // 删除成功，更新本地缓存
-            allPostsCache = allPostsCache.filter(p => p.id !== id);
-            
-            // 更新当前筛选列表
-            // 如果当前是在HOME，直接更新
-            // 如果是在分类下，也需要在 filtered 中移除
-            const currentCategory = document.querySelector('.menu-btn.active').id.replace('btn-', '').toUpperCase();
-            
-            if (currentCategory === 'HOME') {
-                currentFilteredPosts = allPostsCache;
+        // --- 原有的删除逻辑开始 ---
+        try {
+            const res = await fetch('/api/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id })
+            });
+
+            const result = await res.json();
+
+            if (result.success) {
+                // 更新本地缓存并重新渲染
+                allPostsCache = allPostsCache.filter(p => p.id !== id);
+
+                // 刷新当前分类的过滤列表
+                const currentCategory = document.querySelector('.menu-btn.active').id.replace('btn-', '').toUpperCase();
+                if (currentCategory === 'HOME') {
+                    currentFilteredPosts = allPostsCache;
+                } else {
+                    currentFilteredPosts = currentFilteredPosts.filter(p => p.id !== id);
+                }
+
+                // 如果当前页数据空了，且不是第一页，就往前翻
+                if (currentFilteredPosts.length > 0) {
+                    const totalPages = Math.ceil(currentFilteredPosts.length / ITEMS_PER_PAGE);
+                    if (currentPage > totalPages) currentPage = totalPages;
+                } else {
+                    // 如果删光了
+                    currentPage = 1;
+                }
+
+                renderPage(currentPage);
+
+                // 可选：删除成功也弹个提示
+                // Phantom.alert("Target Eliminated.", "SUCCESS"); 
+
             } else {
-                currentFilteredPosts = currentFilteredPosts.filter(p => p.id !== id);
+                Phantom.alert("DELETE FAILED: " + result.message, "ERROR"); // 替换原生 alert
             }
-
-            // 如果当前页数据空了，且不是第一页，就往前翻
-            if (currentFilteredPosts.length > 0) {
-                const totalPages = Math.ceil(currentFilteredPosts.length / ITEMS_PER_PAGE);
-                if (currentPage > totalPages) currentPage = totalPages;
-            }
-            
-            renderPage(currentPage);
-            
-        } else {
-            alert("DELETE FAILED: " + result.message);
+        } catch (err) {
+            Phantom.alert("NETWORK ERROR: Is server running?", "ERROR"); // 替换原生 alert
+            console.error(err);
         }
-    } catch (err) {
-        alert("NETWORK ERROR");
-        console.error(err);
-    }
+        // --- 原有的删除逻辑结束 ---
+
+    }, "WARNING"); // 弹窗标题
 }
+
