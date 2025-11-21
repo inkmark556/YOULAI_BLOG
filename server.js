@@ -88,7 +88,7 @@ app.post('/api/ai-generate', async (req, res) => {
         {
             "title": "提取或生成一个吸引人的标题",
             "summary": "生成一段80字以内的精炼摘要",
-            "tags": "提取3-5个相关技术标签，全大写，用 ' / ' 分隔 (例如: UNITY / SHADER / C#)"
+            "tags": "提取1-3个相关技术标签，全大写，用 ' / ' 分隔 (例如: UNITY / SHADER / C#)"
         }
         `;
 
