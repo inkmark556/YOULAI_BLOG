@@ -9,7 +9,7 @@
         /* ========================================= */
         /* PART 1: 原有的核心样式           */
         /* ========================================= */
-        
+
         /* --- 0. 字体与基础变量 --- */
         @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+SC:wght@400;700;900&display=swap');
 
@@ -74,21 +74,47 @@
         }
 
         @keyframes floatRotate {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(50px, -50px) rotate(180deg); }
-            100% { transform: translate(0, 0) rotate(360deg); }
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            50% {
+                transform: translate(50px, -50px) rotate(180deg);
+            }
+
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
         }
 
         @keyframes floatUp {
-            0% { transform: translateY(120vh) rotate(0deg) scale(0.8); opacity: 0; }
-            20% { opacity: 0.3; }
-            80% { opacity: 0.3; }
-            100% { transform: translateY(-20vh) rotate(45deg) scale(1.2); opacity: 0; }
+            0% {
+                transform: translateY(120vh) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 0.3;
+            }
+
+            80% {
+                opacity: 0.3;
+            }
+
+            100% {
+                transform: translateY(-20vh) rotate(45deg) scale(1.2);
+                opacity: 0;
+            }
         }
 
         @keyframes patternScroll {
-            0% { transform: translate(0, 0) rotate(-5deg); }
-            100% { transform: translate(-50px, -50px) rotate(-5deg); }
+            0% {
+                transform: translate(0, 0) rotate(-5deg);
+            }
+
+            100% {
+                transform: translate(-50px, -50px) rotate(-5deg);
+            }
         }
 
         /* --- 2. 顶部菜单 (Nav Menu) --- */
@@ -157,7 +183,8 @@
 
         .content-area {
             flex: 3;
-            min-height: 500px; /* 避免没文章时塌陷 */
+            min-height: 500px;
+            /* 避免没文章时塌陷 */
         }
 
         .sidebar-area {
@@ -182,7 +209,10 @@
         .post-entry::before {
             content: "";
             position: absolute;
-            left: 0; top: 0; bottom: 0; width: 10px;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 10px;
             background: var(--p5-black);
         }
 
@@ -303,8 +333,13 @@
         }
 
         @keyframes marquee {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
         }
 
         .footer-info {
@@ -330,47 +365,74 @@
 
         /* --- 手机适配 --- */
         @media (max-width: 768px) {
-            .container { flex-direction: column; }
-            .sidebar-area { order: 1; }
-            .menu-list { gap: 5px; }
-            .menu-btn { padding: 5px 10px; font-size: 1rem; }
-            .brand-logo { font-size: 1.8rem; }
-            .footer-info { flex-direction: column; text-align: center; gap: 15px; }
-            .editor-panel { width: 95%; padding: 15px; }
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar-area {
+                order: 1;
+            }
+
+            .menu-list {
+                gap: 5px;
+            }
+
+            .menu-btn {
+                padding: 5px 10px;
+                font-size: 1rem;
+            }
+
+            .brand-logo {
+                font-size: 1.8rem;
+            }
+
+            .footer-info {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .editor-panel {
+                width: 95%;
+                padding: 15px;
+            }
         }
 
         /* ========================================= */
         /* PART 2: 新增的隐藏编辑器样式         */
         /* ========================================= */
-        
+
         #secret-editor {
-            position: fixed; 
-            top: -120%; /* 默认隐藏在屏幕上方 */
-            left: 0; 
-            width: 100%; 
+            position: fixed;
+            top: -120%;
+            /* 默认隐藏在屏幕上方 */
+            left: 0;
+            width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.95); 
+            background: rgba(0, 0, 0, 0.95);
             z-index: 9999;
-            transition: top 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* 弹性动画 */
-            display: flex; 
-            justify-content: center; 
+            transition: top 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            /* 弹性动画 */
+            display: flex;
+            justify-content: center;
             align-items: center;
         }
-        
-        #secret-editor.active { 
-            top: 0; /* 激活时滑下来 */
+
+        #secret-editor.active {
+            top: 0;
+            /* 激活时滑下来 */
         }
 
         .editor-panel {
-            background: var(--p5-white); 
-            width: 800px; 
-            max-width: 90%; 
+            background: var(--p5-white);
+            width: 800px;
+            max-width: 90%;
             padding: 30px;
             clip-path: polygon(5% 0, 100% 0, 100% 95%, 95% 100%, 0 100%, 0 5%);
-            border: 5px solid var(--p5-red); 
+            border: 5px solid var(--p5-red);
             box-shadow: 0 0 50px var(--p5-red);
-            display: flex; 
-            flex-direction: column; 
+            display: flex;
+            flex-direction: column;
             gap: 15px;
             position: relative;
         }
@@ -379,7 +441,8 @@
         .editor-panel::after {
             content: "CONFIDENTIAL";
             position: absolute;
-            bottom: -20px; right: -20px;
+            bottom: -20px;
+            right: -20px;
             background: var(--p5-yellow);
             color: black;
             font-family: 'Bangers';
@@ -388,69 +451,69 @@
             transform: rotate(-5deg);
         }
 
-        .editor-title { 
-            font-family: 'Bangers'; 
-            font-size: 3rem; 
-            color: var(--p5-red); 
-            text-align: center; 
-            margin: 0; 
+        .editor-title {
+            font-family: 'Bangers';
+            font-size: 3rem;
+            color: var(--p5-red);
+            text-align: center;
+            margin: 0;
             text-shadow: 2px 2px 0 black;
         }
-        
+
         .p5-input {
-            background: #eee; 
-            border: 2px solid #333; 
-            padding: 10px; 
-            font-family: 'Noto Sans SC'; 
+            background: #eee;
+            border: 2px solid #333;
+            padding: 10px;
+            font-family: 'Noto Sans SC';
             font-weight: bold;
-            font-size: 1rem; 
-            outline: none; 
+            font-size: 1rem;
+            outline: none;
             transform: skewX(-5deg);
             transition: 0.2s;
         }
-        
-        .p5-input:focus { 
-            background: var(--p5-yellow); 
-            border-color: var(--p5-red); 
+
+        .p5-input:focus {
+            background: var(--p5-yellow);
+            border-color: var(--p5-red);
             transform: skewX(-5deg) scale(1.02);
         }
 
-        textarea.p5-input { 
-            height: 300px; 
-            transform: none; 
-            resize: vertical; 
-            font-family: 'Consolas', monospace; 
+        textarea.p5-input {
+            height: 300px;
+            transform: none;
+            resize: vertical;
+            font-family: 'Consolas', monospace;
             font-size: 0.9rem;
         }
 
-        .editor-btn-group { 
-            display: flex; 
-            gap: 20px; 
-            justify-content: flex-end; 
-            margin-top: 10px; 
+        .editor-btn-group {
+            display: flex;
+            gap: 20px;
+            justify-content: flex-end;
+            margin-top: 10px;
         }
-        
+
         .p5-btn {
-            background: var(--p5-black); 
-            color: var(--p5-white); 
-            padding: 10px 40px; 
-            font-family: 'Bangers'; 
+            background: var(--p5-black);
+            color: var(--p5-white);
+            padding: 10px 40px;
+            font-family: 'Bangers';
             font-size: 1.5rem;
-            border: none; 
-            cursor: pointer; 
-            transform: skewX(-10deg); 
+            border: none;
+            cursor: pointer;
+            transform: skewX(-10deg);
             transition: 0.2s;
             clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
         }
-        
-        .p5-btn:hover { 
-            background: var(--p5-red); 
-            transform: skewX(-10deg) scale(1.1) rotate(2deg); 
-            box-shadow: 5px 5px 0 rgba(0,0,0,0.5);
+
+        .p5-btn:hover {
+            background: var(--p5-red);
+            transform: skewX(-10deg) scale(1.1) rotate(2deg);
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.5);
         }
-        
-        .p5-btn.cancel { 
-            background: #666; 
+
+        .p5-btn.cancel {
+            background: #666;
         }
     </style>
 </head>
@@ -461,25 +524,31 @@
         <div class="pattern-overlay"></div>
         <div class="shape star-shape" style="top: 10%; left: 10%; animation-duration: 8s;">★</div>
         <div class="shape star-shape" style="top: 50%; left: 80%; animation-duration: 12s; font-size: 1rem;">★</div>
-        <div class="shape star-shape" style="top: 80%; left: 20%; animation-duration: 15s; color: var(--p5-yellow);">★</div>
+        <div class="shape star-shape" style="top: 80%; left: 20%; animation-duration: 15s; color: var(--p5-yellow);">★
+        </div>
         <div class="shape poly-shape" style="left: 15%; animation-delay: 0s;"></div>
         <div class="shape poly-shape" style="left: 75%; animation-delay: 5s; width: 50px; height: 50px;"></div>
         <div class="shape poly-shape" style="left: 40%; animation-delay: 2s; background: var(--p5-yellow);"></div>
     </div>
 
     <nav class="top-nav">
-        <a href="#" class="brand-logo">CODE PHANTOM</a>
+        <a href="#" class="brand-logo" onclick="filterPosts('HOME'); return false;">CODE PHANTOM</a>
         <div class="menu-list">
-            <a href="#" class="menu-btn active">HOME</a>
-            <a href="#" class="menu-btn">UNITY</a>
-            <a href="#" class="menu-btn">SHADER</a>
-            <a href="#" class="menu-btn">ABOUT</a>
+            <a href="#" id="btn-home" class="menu-btn active" onclick="filterPosts('HOME'); return false;">HOME</a>
+            <a href="#" id="btn-unity" class="menu-btn" onclick="filterPosts('UNITY'); return false;">UNITY</a>
+            <a href="#" id="btn-shader" class="menu-btn" onclick="filterPosts('SHADER'); return false;">SHADER</a>
+            <a href="post.html?id=about" id="btn-about" class="menu-btn">ABOUT</a>
+
+            <a href="editor.html" class="menu-btn" style="background:var(--p5-red); color:white; margin-left:20px;">
+                + NEW LOG
+            </a>
         </div>
     </nav>
 
     <div class="container">
         <main class="content-area" id="blog-list-container">
-            <h2 style="color:white; font-family:'Bangers'; text-align:center; margin-top:50px;">INITIALIZING PHANTOM NETWORK...</h2>
+            <h2 style="color:white; font-family:'Bangers'; text-align:center; margin-top:50px;">INITIALIZING PHANTOM
+                NETWORK...</h2>
         </main>
 
         <aside class="sidebar-area">
@@ -489,7 +558,8 @@
                     <img src="照片.jpg" alt="Avatar">
                     <div>
                         <div style="font-weight:900; color:var(--p5-white);">又来</div>
-                        <div style="font-size:0.8rem; color:#aaa;">Unity Developer</div>
+                        <div style="font-size:0.8rem; color:#aaa;">躺平工程师</div>
+                        <div style="font-size:0.8rem; color:#aaa; margin-top:4px;">QQ: 320747607</div>
                     </div>
                 </div>
             </div>
@@ -504,9 +574,10 @@
                     <a href="#" class="tag-item"># VR/AR</a>
                 </div>
             </div>
-            
-            <div style="background:var(--p5-black); color:#666; padding:10px; margin-top:20px; font-size:0.8rem; text-align:center; border:1px dashed #444;">
-                 CMD: A-B-A-B-UP-DOWN
+
+            <div
+                style="background:var(--p5-black); color:#666; padding:10px; margin-top:20px; font-size:0.8rem; text-align:center; border:1px dashed #444;">
+                CMD: A-B-A-B-UP-DOWN
             </div>
         </aside>
     </div>
@@ -514,7 +585,8 @@
     <footer class="footer-bar">
         <div class="marquee-wrap">
             <div class="marquee-content">
-                LATEST COMMIT: FIXED NETWORK SYNC BUG IN RTS PROJECT +++ NEW SHADER DEMO RELEASED ON GITHUB +++ LOOKING FOR NEW OPPORTUNITIES +++
+                LATEST COMMIT: FIXED NETWORK SYNC BUG IN RTS PROJECT +++ NEW SHADER DEMO RELEASED ON GITHUB +++ LOOKING
+                FOR NEW OPPORTUNITIES +++
             </div>
         </div>
 
@@ -531,12 +603,12 @@
         </div>
     </footer>
 
-    /* PART 3: 隐藏的编辑器 (Hidden Editor)      */
+    /* PART 3: 隐藏的编辑器 (Hidden Editor) */
     /* ========================================= */
     <div id="secret-editor">
         <div class="editor-panel">
             <h2 class="editor-title">PHANTOM BROADCAST</h2>
-            
+
             <input type="text" id="in-id" class="p5-input" placeholder="POST ID (e.g. unity_004)">
             <input type="text" id="in-title" class="p5-input" placeholder="TITLE">
             <div style="display:flex; gap:10px;">
@@ -554,34 +626,26 @@
     </div>
 
     <script>
-        // 1. 初始化：加载文章列表
-        document.addEventListener('DOMContentLoaded', loadPosts);
+        // 全局变量缓存文章数据，避免重复请求
+        let allPostsCache = [];
 
-        async function loadPosts() {
+        // 1. 初始化：加载文章列表
+        document.addEventListener('DOMContentLoaded', initApp);
+
+        async function initApp() {
             const container = document.getElementById('blog-list-container');
+
             try {
-                // 请求 posts.json (确保你已经创建了这个文件)
+                // 请求 posts.json
                 const res = await fetch('posts.json');
-                if(!res.ok) throw new Error("JSON NOT FOUND");
-                
-                const posts = await res.json();
-                
-                container.innerHTML = ''; // 清空加载提示
-                
-                posts.forEach(post => {
-                    const html = `
-                        <article class="post-entry" onclick="location.href='post.html?id=${post.id}'">
-                            <div class="post-content-wrap">
-                                <div class="post-meta">${post.date} <span class="post-tag">${post.tags}</span></div>
-                                <h2 class="post-title">${post.title}</h2>
-                                <p class="post-summary">${post.summary}</p>
-                            </div>
-                        </article>
-                    `;
-                    container.innerHTML += html;
-                });
+                if (!res.ok) throw new Error("JSON NOT FOUND");
+
+                allPostsCache = await res.json();
+
+                // 默认显示所有文章 (HOME)
+                renderPosts(allPostsCache);
+
             } catch (err) {
-                // 如果没有 posts.json 或者服务器没开，显示错误提示
                 container.innerHTML = `
                     <div style="background:var(--p5-black); color:white; padding:20px; border:2px solid red; transform:rotate(-2deg);">
                         <h2 style="font-family:'Bangers'; color:red;">CONNECTION ERROR</h2>
@@ -592,30 +656,85 @@
             }
         }
 
-        // 2. 作弊码监听 (A B A B 上 下 上 下)
-        // 顺序：A -> B -> A -> B -> ArrowUp -> ArrowDown -> ArrowUp -> ArrowDown
+        // 核心：渲染文章列表
+        function renderPosts(posts) {
+            const container = document.getElementById('blog-list-container');
+            container.innerHTML = ''; // 清空当前显示
+
+            if (posts.length === 0) {
+                container.innerHTML = `<h2 style="color:white; font-family:'Bangers'; margin-top:50px;">NO DATA FOUND...</h2>`;
+                return;
+            }
+
+            // 稍微加个延时动画效果
+            container.style.opacity = 0;
+
+            posts.forEach(post => {
+                // 处理标签显示：如果是数组就拼接，如果是字符串直接显示
+                let tagsDisplay = Array.isArray(post.tags) ? post.tags.join(' / ') : post.tags;
+
+                const html = `
+                    <article class="post-entry" onclick="location.href='post.html?id=${post.id}'">
+                        <div class="post-content-wrap">
+                            <div class="post-meta">${post.date} <span class="post-tag">${tagsDisplay}</span></div>
+                            <h2 class="post-title">${post.title}</h2>
+                            <p class="post-summary">${post.summary}</p>
+                        </div>
+                    </article>
+                `;
+                container.innerHTML += html;
+            });
+
+            // 简单的淡入动画
+            setTimeout(() => { container.style.opacity = 1; }, 50);
+        }
+
+        // 按钮功能：筛选文章
+        function filterPosts(category) {
+            // 1. 切换按钮激活状态
+            // 移除所有按钮的 active 类
+            document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
+
+            // 给当前点击的按钮加 active 类 (如果是 Brand Logo 点击，默认高亮 Home)
+            const activeBtnId = category === 'HOME' ? 'btn-home' : `btn-${category.toLowerCase()}`;
+            const activeBtn = document.getElementById(activeBtnId);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            // 2. 执行筛选逻辑
+            if (category === 'HOME') {
+                // 显示所有
+                renderPosts(allPostsCache);
+            } else {
+                // 筛选 Tags 中包含对应关键字的文章 (不区分大小写)
+                const filtered = allPostsCache.filter(post => {
+                    // 兼容 tags 是数组或字符串的情况
+                    const tagsStr = Array.isArray(post.tags) ? post.tags.join(' ') : post.tags;
+                    return tagsStr.toLowerCase().includes(category.toLowerCase());
+                });
+                renderPosts(filtered);
+            }
+        }
+
+        // 2. 作弊码监听 (保留你之前的代码)
         const secretCode = ['a', 'b', 'a', 'b', 'ArrowUp', 'ArrowDown', 'ArrowUp', 'ArrowDown'];
         let keyIndex = 0;
 
         document.addEventListener('keydown', (e) => {
             const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
-            
             if (key === secretCode[keyIndex]) {
                 keyIndex++;
                 if (keyIndex === secretCode.length) {
-                    toggleEditor(); // 触发！
-                    keyIndex = 0; // 重置
+                    toggleEditor();
+                    keyIndex = 0;
                 }
             } else {
-                keyIndex = 0; // 输错重置
+                keyIndex = 0;
             }
         });
 
         function toggleEditor() {
             const editor = document.getElementById('secret-editor');
             editor.classList.toggle('active');
-            
-            // 自动填充今天的日期
             if (editor.classList.contains('active')) {
                 const now = new Date();
                 const dateStr = now.toISOString().split('T')[0].replace(/-/g, '.');
@@ -623,8 +742,9 @@
             }
         }
 
-        // 3. 上传逻辑
+        // 3. 上传逻辑 (保留你之前的代码)
         async function uploadPost() {
+            // ... (保持原样不变)
             const data = {
                 id: document.getElementById('in-id').value,
                 title: document.getElementById('in-title').value,
@@ -634,26 +754,29 @@
                 content: document.getElementById('in-content').value
             };
 
-            if(!data.id || !data.title || !data.content) {
+            if (!data.id || !data.title || !data.content) {
                 alert("INFO MISSING! (ID, Title & Content required)");
                 return;
             }
 
             try {
-                // 发送给 Node.js 后端
                 const res = await fetch('/api/upload', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
-                
+
                 const result = await res.json();
                 if (result.success) {
                     alert("PHANTOM THIEVES: MESSAGE SENT!");
-                    toggleEditor(); // 关闭界面
-                    loadPosts(); // 刷新列表，立即显示新文章
-                    
-                    // 清空输入框
+                    toggleEditor();
+
+                    // 重新获取最新列表并更新缓存
+                    const refreshRes = await fetch('posts.json');
+                    allPostsCache = await refreshRes.json();
+                    renderPosts(allPostsCache); // 刷新显示
+
+                    // 清空输入
                     document.getElementById('in-id').value = '';
                     document.getElementById('in-title').value = '';
                     document.getElementById('in-content').value = '';

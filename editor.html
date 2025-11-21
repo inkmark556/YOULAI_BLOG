@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHANTOM EDITOR | 新建日志</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+SC:wght@400;700;900&display=swap');
+
+        :root {
+            --p5-red: #D20505;
+            --p5-black: #151515;
+            --p5-white: #f0f0f0;
+            --p5-yellow: #fce100;
+        }
+
+        body {
+            margin: 0;
+            background-color: #222;
+            color: #333;
+            font-family: 'Noto Sans SC', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            /* 禁止整个页面滚动 */
+        }
+
+        /* --- 顶部工具栏区域 --- */
+        .editor-header {
+            background: var(--p5-black);
+            height: 140px;
+            padding: 10px 20px;
+            border-bottom: 4px solid var(--p5-red);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        /* 输入框组 */
+        .meta-group {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .p5-input {
+            background: #333;
+            border: 2px solid #555;
+            color: white;
+            padding: 8px;
+            font-family: 'Noto Sans SC';
+            font-weight: bold;
+            outline: none;
+            transform: skewX(-5deg);
+            transition: 0.2s;
+        }
+
+        .p5-input:focus {
+            background: var(--p5-black);
+            border-color: var(--p5-yellow);
+            color: var(--p5-yellow);
+        }
+
+        .p5-input::placeholder {
+            color: #777;
+        }
+
+        /* 两个大按钮 */
+        .action-btn {
+            font-family: 'Bangers';
+            font-size: 1.5rem;
+            padding: 10px 25px;
+            border: none;
+            cursor: pointer;
+            transform: skewX(-10deg);
+            transition: 0.2s;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+        }
+
+        .btn-publish {
+            background: var(--p5-red);
+            color: white;
+        }
+
+        .btn-publish:hover {
+            background: var(--p5-yellow);
+            color: black;
+            transform: skewX(-10deg) scale(1.1);
+        }
+
+        .btn-back {
+            background: #444;
+            color: white;
+        }
+
+        .btn-back:hover {
+            background: white;
+            color: black;
+        }
+
+        /* --- 主体分栏 --- */
+        .workspace {
+            flex: 1;
+            display: flex;
+            height: calc(100vh - 140px);
+        }
+
+        /* 左侧：编辑区 */
+        .edit-pane {
+            flex: 1;
+            background: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid var(--p5-red);
+        }
+
+        .toolbar {
+            background: #2a2a2a;
+            padding: 8px;
+            display: flex;
+            gap: 5px;
+            border-bottom: 1px solid #444;
+        }
+
+        .tool-btn {
+            background: #444;
+            color: #ccc;
+            border: 1px solid #555;
+            padding: 5px 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .tool-btn:hover {
+            background: var(--p5-yellow);
+            color: black;
+        }
+
+        #markdown-input {
+            flex: 1;
+            background: #111;
+            color: #ddd;
+            border: none;
+            padding: 20px;
+            font-family: 'Consolas', monospace;
+            font-size: 1rem;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+        }
+
+        /* 右侧：预览区 (复用 post.html 的样式) */
+        .preview-pane {
+            flex: 1;
+            background: var(--p5-white);
+            overflow-y: auto;
+            padding: 40px;
+            background-image: radial-gradient(#ccc 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .markdown-body {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .markdown-body h1 {
+            border-bottom: 3px solid black;
+            padding-bottom: 10px;
+        }
+
+        .markdown-body blockquote {
+            border-left: 5px solid var(--p5-red);
+            background: #ddd;
+            padding: 10px;
+        }
+
+        .markdown-body pre {
+            background: #222;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+
+        .markdown-body img {
+            max-width: 100%;
+            border: 2px solid black;
+        }
+
+        /* 移动端 */
+        @media (max-width: 768px) {
+            .editor-header {
+                height: auto;
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .meta-group {
+                width: 100%;
+                grid-template-columns: 1fr;
+            }
+
+            .workspace {
+                flex-direction: column;
+            }
+
+            .edit-pane {
+                height: 50%;
+            }
+
+            .preview-pane {
+                height: 50%;
+            }
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+</head>
+
+<body>
+
+    <header class="editor-header">
+        <div style="text-align:center; margin-right:20px;">
+            <div style="font-family:'Bangers'; color:var(--p5-red); font-size:1.5rem; line-height:1;">PHANTOM</div>
+            <div style="font-weight:900; color:white; font-size:0.8rem;">EDITOR_V1.1</div>
+        </div>
+
+        <div class="meta-group">
+            <input type="text" id="in-id" class="p5-input" placeholder="ID (e.g. unity_005)">
+            <input type="text" id="in-date" class="p5-input" placeholder="DATE (Auto)">
+
+            <div style="display:flex; gap:5px; grid-column: span 1;">
+                <input type="text" id="in-tags" class="p5-input" placeholder="TAGS" style="flex:1">
+                <button onclick="aiAutoFill()" class="p5-input"
+                    style="background:var(--p5-yellow); color:black; cursor:pointer; font-family:'Bangers'; border:2px solid black;"
+                    title="AUTO GENERATE INFO">
+                    ⚡ AI GEN
+                </button>
+            </div>
+
+            <input type="text" id="in-title" class="p5-input" placeholder="TITLE" style="grid-column: span 3;">
+            <input type="text" id="in-summary" class="p5-input" placeholder="SUMMARY" style="grid-column: span 3;">
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:10px;">
+            <button class="action-btn btn-publish" onclick="publish()">SEND CARD</button>
+            <button class="action-btn btn-back" onclick="window.location.href='index.html'">EXIT</button>
+        </div>
+    </header>
+
+    <div class="workspace">
+        <div class="edit-pane">
+            <div class="toolbar">
+                <button class="tool-btn" onclick="insertText('**', '**')">B</button>
+                <button class="tool-btn" onclick="insertText('*', '*')">I</button>
+                <button class="tool-btn" onclick="insertText('# ', '')">H1</button>
+                <button class="tool-btn" onclick="insertText('## ', '')">H2</button>
+                <button class="tool-btn" onclick="insertText('### ', '')">H3</button>
+                <button class="tool-btn" onclick="insertText('```csharp\n', '\n```')">{ }</button>
+                <button class="tool-btn" onclick="insertText('> ', '')">Ref</button>
+                <button class="tool-btn" onclick="insertText('![Alt](', ')')">Img</button>
+                <button class="tool-btn" onclick="insertText('[Text](', ')')">Link</button>
+            </div>
+            <textarea id="markdown-input" placeholder="# Start hacking here..."></textarea>
+        </div>
+
+        <div class="preview-pane">
+            <div id="preview-content" class="markdown-body">
+                <h1 style="color:#ccc; text-align:center; margin-top:50px;">PREVIEW AREA</h1>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById('markdown-input');
+        const preview = document.getElementById('preview-content');
+
+        // 1. 自动填充日期
+        document.getElementById('in-date').value = new Date().toISOString().split('T')[0].replace(/-/g, '.');
+
+        // 2. 实时预览逻辑
+        input.addEventListener('input', () => {
+            const text = input.value;
+            // 解析 Markdown
+            preview.innerHTML = marked.parse(text);
+            // 触发代码高亮
+            Prism.highlightAllUnder(preview);
+        });
+
+        // 3. 快捷键插入文本逻辑
+        function insertText(before, after) {
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+            const text = input.value;
+            const selected = text.substring(start, end);
+
+            const replacement = before + selected + after;
+
+            input.value = text.substring(0, start) + replacement + text.substring(end);
+
+            // 恢复光标位置
+            input.focus();
+            input.selectionStart = start + before.length;
+            input.selectionEnd = start + before.length + selected.length;
+
+            // 触发 input 事件以更新预览
+            input.dispatchEvent(new Event('input'));
+        }
+
+        // 4. 发布逻辑
+        async function publish() {
+            const data = {
+                id: document.getElementById('in-id').value,
+                title: document.getElementById('in-title').value,
+                date: document.getElementById('in-date').value,
+                tags: document.getElementById('in-tags').value,
+                summary: document.getElementById('in-summary').value,
+                content: input.value
+            };
+
+            if (!data.id || !data.title || !data.content) {
+                alert("MISSING DATA: ID, Title and Content are required.");
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/upload', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+
+                if (result.success) {
+                    if (confirm("SUCCESS! Post created. Go back to Home?")) {
+                        window.location.href = 'index.html';
+                    }
+                } else {
+                    alert("ERROR: " + result.message);
+                }
+            } catch (err) {
+                alert("NETWORK ERROR: Is server.js running?");
+            }
+        }
+        // --- 新增：AI 自动填充逻辑 ---
+        async function aiAutoFill() {
+            const content = input.value; // 获取编辑器里的 Markdown
+            const btn = document.querySelector('button[title="AUTO GENERATE INFO"]');
+
+            if (content.length < 10) {
+                alert("PHANTOM AI: CONTENT TOO SHORT! (Need more data to analyze)");
+                return;
+            }
+
+            // 按钮变身：加载中状态
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "Thinking...";
+            btn.style.background = "#ccc";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/ai-generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: content })
+                });
+
+                const result = await res.json();
+
+                if (result.success) {
+                    // 自动填入数据
+                    // 只有当输入框为空时才覆盖，避免覆盖用户手写的
+                    if (!document.getElementById('in-title').value)
+                        document.getElementById('in-title').value = result.data.title;
+
+                    if (!document.getElementById('in-summary').value)
+                        document.getElementById('in-summary').value = result.data.summary;
+
+                    if (!document.getElementById('in-tags').value)
+                        document.getElementById('in-tags').value = result.data.tags;
+
+                    // 视觉反馈
+                    btn.style.background = "#55ff55"; // 变绿
+                    btn.innerHTML = "OK!";
+                    setTimeout(() => {
+                        btn.style.background = "var(--p5-yellow)";
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }, 1000);
+                } else {
+                    alert("AI ERROR: " + result.message);
+                    btn.innerHTML = "ERROR";
+                }
+
+            } catch (err) {
+                console.error(err);
+                alert("NETWORK ERROR: Check server console.");
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+    </script>
+</body>
+
+</html>

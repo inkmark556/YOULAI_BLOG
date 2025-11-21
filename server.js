@@ -64,7 +64,98 @@ app.post('/api/upload', (req, res) => {
         res.status(500).json({ success: false, message: 'SERVER ERROR' });
     }
 });
+// server.js - DeepSeek 接入版
 
+// ... (前面的引入保持不变)
+
+// ★★★ 请在这里填入你的 DeepSeek API Key ★★★
+const DEEPSEEK_API_KEY = "sk-25ca1265fd004d0fae0d7eeebf8c6d31";
+
+// --- AI 辅助生成接口 (接入 DeepSeek) ---
+app.post('/api/ai-generate', async (req, res) => {
+    try {
+        const { content } = req.body;
+        if (!content) return res.json({ success: false, message: "NO CONTENT" });
+
+        console.log("正在呼叫 DeepSeek...");
+
+        // 1. 构造 Prompt（提示词）
+        // 我们要求 AI 必须返回严格的 JSON 格式，这样前端才好填空
+        const systemPrompt = `
+        你是一个专业的Unity技术博客助手。请分析用户输入的 Markdown 文章内容，并提取/生成以下元数据。
+        请严格按照 JSON 格式返回，不要包含 markdown 代码块标记（如 \`\`\`json）。
+        JSON 结构如下：
+        {
+            "title": "提取或生成一个吸引人的标题",
+            "summary": "生成一段80字以内的精炼摘要",
+            "tags": "提取3-5个相关技术标签，全大写，用 ' / ' 分隔 (例如: UNITY / SHADER / C#)"
+        }
+        `;
+
+        // 2. 发送请求给 DeepSeek API
+        const response = await fetch('https://api.deepseek.com/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: "deepseek-chat", // 或者 deepseek-coder
+                messages: [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: content }
+                ],
+                temperature: 0.7, // 稍微有一点创造性
+                max_tokens: 500
+            })
+        });
+
+        // 3. 处理 API 返回
+        if (!response.ok) {
+            const errText = await response.text();
+            console.error("DeepSeek API Error:", errText);
+            throw new Error(`API request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const aiContent = data.choices[0].message.content.trim();
+
+        // 4. 解析 AI 返回的 JSON 字符串
+        // 有时候 AI 会手贱加上 ```json ... ```，我们需要清洗一下
+        let cleanJson = aiContent.replace(/```json/g, '').replace(/```/g, '').trim();
+
+        let metaData;
+        try {
+            metaData = JSON.parse(cleanJson);
+        } catch (e) {
+            console.error("JSON Parse Error. AI returned:", aiContent);
+            // 如果解析失败，做个降级处理，直接把原始文本塞回去
+            metaData = {
+                title: "AI Parsing Error",
+                summary: aiContent,
+                tags: "ERROR"
+            };
+        }
+
+        console.log("DeepSeek 响应成功:", metaData);
+
+        // 5. 返回给前端
+        res.json({
+            success: true,
+            data: {
+                title: metaData.title,
+                summary: metaData.summary,
+                tags: metaData.tags
+            }
+        });
+
+    } catch (error) {
+        console.error("Server Error:", error);
+        res.status(500).json({ success: false, message: "AI CONNECTION FAILED" });
+    }
+});
+
+// ... (后面的 app.listen 保持不变)
 app.listen(PORT, () => {
     console.log(`P5 Phantom Server running at http://localhost:${PORT}`);
 });

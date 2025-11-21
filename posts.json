@@ -1,23 +1,43 @@
 [
   {
+    "id": "unity_009",
+    "title": "深度测试：Unity渲染管线的关键环节",
+    "date": "2025.11.21",
+    "tags": "UNITY / SHADER / RENDERING / DEPTH TEST / GRAPHICS",
+    "summary": "深度测试在Unity渲染中决定像素可见性，优化性能与遮挡关系，是图形渲染不可或缺的核心技术。"
+  },
+  {
+    "id": "unity_005",
+    "title": "关于",
+    "date": "2025.11.21",
+    "tags": "Unity",
+    "summary": " 我相信游戏不仅仅是娱乐，更是一种表达和连接的方式。希望能用自己的技术和创意，做出让人开心、感动、甚至能改变一点点世界的作品。"
+  },
+  {
     "id": "unity_001",
     "title": "Unity RTS 实战：基于 DDPG 的集群行为模拟",
     "date": "2025.11.20",
-    "tags": ["AI DEV"],
+    "tags": [
+      "AI DEV"
+    ],
     "summary": "在军事推演项目中，普通的FSM已经无法满足需求。本文记录了如何训练 Python DDPG 神经网络并接入 Unity..."
   },
   {
     "id": "unity_002",
     "title": "万物皆可池化：Addressing 大场景内存泄漏",
     "date": "2025.10.15",
-    "tags": ["OPTIMIZATION"],
+    "tags": [
+      "OPTIMIZATION"
+    ],
     "summary": "当场景物体超过1万个时，GC峰值成为了噩梦。这是我在仿真项目中总结的一套基于Addressables的动态加载方案。"
   },
   {
     "id": "unity_003",
     "title": "URP 管线下的卡通渲染 (Toon Shader) 深度解析",
     "date": "2025.09.01",
-    "tags": ["SHADER"],
+    "tags": [
+      "SHADER"
+    ],
     "summary": "复刻 P5 风格渲染？从 Shader Graph 到手写 HLSL，解析描边、Ramp贴图与边缘光的实现细节。"
   }
 ]
