@@ -98,7 +98,7 @@ async function publish() {
             const msg = currentEditingId ? "LOG UPDATED!" : "NEW LOG CREATED!";
             Phantom.confirm(msg + "\nReturn to Home?", () => {
                 // 修改为返回上一级 ../index.html
-                window.location.href = '../index.html';
+                window.location.href = '/index.html';
             }, "MISSION COMPLETE");
         } else {
             Phantom.alert("ERROR: " + result.message, "SERVER ERROR");

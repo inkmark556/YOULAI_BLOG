@@ -1,10 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+SC:wght@400;700;900&display=swap');
+
 :root {
     --p5-red: #D20505;
     --p5-black: #151515;
     --p5-white: #f0f0f0;
     --p5-yellow: #fce100;
 }
+
 body {
     margin: 0;
     background-color: #222;
@@ -15,6 +17,7 @@ body {
     flex-direction: column;
     overflow: hidden;
 }
+
 .editor-header {
     background: var(--p5-black);
     height: 140px;
@@ -26,12 +29,14 @@ body {
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
     z-index: 10;
 }
+
 .meta-group {
     flex: 1;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 10px;
 }
+
 .p5-input {
     background: #333;
     border: 2px solid #555;
@@ -43,14 +48,17 @@ body {
     transform: skewX(-5deg);
     transition: 0.2s;
 }
+
 .p5-input:focus {
     background: var(--p5-black);
     border-color: var(--p5-yellow);
     color: var(--p5-yellow);
 }
+
 .p5-input::placeholder {
     color: #777;
 }
+
 .action-btn {
     font-family: 'Bangers';
     font-size: 1.5rem;
@@ -61,28 +69,34 @@ body {
     transition: 0.2s;
     clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
 }
+
 .btn-publish {
     background: var(--p5-red);
     color: white;
 }
+
 .btn-publish:hover {
     background: var(--p5-yellow);
     color: black;
     transform: skewX(-10deg) scale(1.1);
 }
+
 .btn-back {
     background: #444;
     color: white;
 }
+
 .btn-back:hover {
     background: white;
     color: black;
 }
+
 .workspace {
     flex: 1;
     display: flex;
     height: calc(100vh - 140px);
 }
+
 .edit-pane {
     flex: 1;
     background: #1a1a1a;
@@ -90,6 +104,7 @@ body {
     flex-direction: column;
     border-right: 2px solid var(--p5-red);
 }
+
 .toolbar {
     background: #2a2a2a;
     padding: 8px;
@@ -97,6 +112,7 @@ body {
     gap: 5px;
     border-bottom: 1px solid #444;
 }
+
 .tool-btn {
     background: #444;
     color: #ccc;
@@ -106,10 +122,12 @@ body {
     cursor: pointer;
     font-size: 0.9rem;
 }
+
 .tool-btn:hover {
     background: var(--p5-yellow);
     color: black;
 }
+
 #markdown-input {
     flex: 1;
     background: #111;
@@ -122,6 +140,7 @@ body {
     resize: none;
     outline: none;
 }
+
 .preview-pane {
     flex: 1;
     background: var(--p5-white);
@@ -130,19 +149,23 @@ body {
     background-image: radial-gradient(#ccc 1px, transparent 1px);
     background-size: 20px 20px;
 }
+
 .markdown-body {
     max-width: 800px;
     margin: 0 auto;
 }
+
 .markdown-body h1 {
     border-bottom: 3px solid black;
     padding-bottom: 10px;
 }
+
 .markdown-body blockquote {
     border-left: 5px solid var(--p5-red);
     background: #ddd;
     padding: 10px;
 }
+
 .markdown-body pre {
     background: #222;
     color: #f8f8f2;
@@ -150,27 +173,48 @@ body {
     border-radius: 4px;
     overflow-x: auto;
 }
+
 .markdown-body img {
     max-width: 100%;
     border: 2px solid black;
 }
+
 @media (max-width: 768px) {
     .editor-header {
         height: auto;
         flex-direction: column;
         padding: 20px;
     }
+
     .meta-group {
         width: 100%;
         grid-template-columns: 1fr;
     }
+
     .workspace {
         flex-direction: column;
     }
+
     .edit-pane {
         height: 50%;
     }
+
     .preview-pane {
         height: 50%;
     }
+}
+
+/* editor.css 末尾添加 */
+
+/* P5R 风格行内代码 */
+.markdown-body code:not([class*="language-"]) {
+    background-color: rgba(210, 5, 5, 0.1);
+    color: #d20505;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9em;
+    padding: 2px 6px;
+    margin: 0 2px;
+    border-radius: 2px;
+    border-bottom: 2px solid rgba(210, 5, 5, 0.3);
+    font-weight: bold;
 }

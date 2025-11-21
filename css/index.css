@@ -4,7 +4,7 @@
 
 :root {
     --p5-red: #D20505;
-    --p5-black: #111;
+    --p5-black: #151515;
     --p5-grey: #222;
     --p5-white: #fafafa;
     --p5-yellow: #fce100;
@@ -12,7 +12,7 @@
 
 body {
     margin: 0;
-    background-color: #1a1a1a;
+    background-color: var(--p5-black);
     font-family: 'Noto Sans SC', sans-serif;
     color: var(--p5-black);
     overflow-x: hidden;
@@ -21,16 +21,104 @@ body {
     flex-direction: column;
 }
 
-/* --- 背景动效 --- */
-.bg-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none; }
-.shape { position: absolute; opacity: 0.15; }
-.star-shape { color: var(--p5-white); font-size: 2rem; animation: floatRotate 10s infinite linear; }
-.poly-shape { width: 100px; height: 100px; background: var(--p5-red); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); animation: floatUp 15s infinite ease-in-out; }
-.pattern-overlay { width: 200%; height: 200%; background-image: radial-gradient(#444 1px, transparent 1px); background-size: 30px 30px; position: absolute; opacity: 0.1; animation: patternScroll 60s linear infinite; }
+/* ========================================= */
+/* ★★★ P5R 风格动态背景层 (Background FX) ★★★ */
+/* ========================================= */
 
-@keyframes floatRotate { 0% { transform: translate(0, 0) rotate(0deg); } 100% { transform: translate(0, 0) rotate(360deg); } }
-@keyframes floatUp { 0% { transform: translateY(120vh) rotate(0deg) scale(0.8); opacity: 0; } 100% { transform: translateY(-20vh) rotate(45deg) scale(1.2); opacity: 0; } }
-@keyframes patternScroll { 0% { transform: translate(0, 0) rotate(-5deg); } 100% { transform: translate(-50px, -50px) rotate(-5deg); } }
+.bg-layer {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    background-color: #1a1a1a;
+}
+
+/* 1. 流动的斜条纹 (The Phantom Stripes) */
+.bg-stripes {
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 20px,
+        rgba(30, 30, 30, 0.4) 20px,
+        rgba(30, 30, 30, 0.4) 40px
+    );
+    animation: stripe-move 60s linear infinite;
+    transform: rotate(-10deg);
+}
+
+@keyframes stripe-move {
+    0% { transform: translate(0, 0) rotate(-10deg); }
+    100% { transform: translate(-100px, 100px) rotate(-10deg); }
+}
+
+/* 2. 半调波点底纹 (Halftone Pattern) */
+.bg-dots {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.6;
+}
+
+/* 3. 漂浮的几何形状 (Floating Shapes) */
+.shape {
+    position: absolute;
+    opacity: 0.8;
+    filter: drop-shadow(5px 5px 0 rgba(0,0,0,0.5));
+    animation: float-anim 10s ease-in-out infinite alternate;
+}
+
+/* 星星 */
+.shape-star {
+    color: var(--p5-white);
+    font-size: 2rem;
+    font-family: sans-serif; /* 确保星星符号显示正常 */
+    animation: spin-anim 12s linear infinite;
+}
+
+/* 红色碎片 */
+.shape-shard {
+    background: var(--p5-red);
+    clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
+    animation: float-up 15s linear infinite;
+    opacity: 0.4;
+}
+
+/* 黄色闪电/锯齿 */
+.shape-jagged {
+    background: var(--p5-yellow);
+    width: 80px; height: 80px;
+    clip-path: polygon(40% 0%, 40% 20%, 100% 20%, 100% 80%, 40% 80%, 40% 100%, 0% 50%);
+    animation: pulse-anim 2s infinite;
+    opacity: 0.8;
+}
+
+/* 动画定义 */
+@keyframes spin-anim {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.2); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes float-up {
+    0% { transform: translateY(110vh) rotate(0deg) scale(0.5); opacity: 0; }
+    10% { opacity: 0.4; }
+    90% { opacity: 0.4; }
+    100% { transform: translateY(-10vh) rotate(720deg) scale(1.2); opacity: 0; }
+}
+
+@keyframes pulse-anim {
+    0% { transform: scale(1) rotate(-5deg); }
+    50% { transform: scale(1.1) rotate(5deg); }
+    100% { transform: scale(1) rotate(-5deg); }
+}
+
+/* ========================================= */
+/* 以下为原有样式 (保持不变)               */
+/* ========================================= */
 
 /* --- 导航 --- */
 .top-nav { background: var(--p5-black); padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 5px solid var(--p5-red); position: relative; z-index: 100; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5); }
@@ -46,7 +134,7 @@ body {
 .sidebar-area { flex: 1; min-width: 250px; }
 
 /* --- 侧边栏 --- */
-.widget-box { background: rgba(0, 0, 0, 0.6); border: 2px solid var(--p5-white); color: var(--p5-white); padding: 20px; margin-bottom: 30px; transform: rotate(-1deg); }
+.widget-box { background: rgba(0, 0, 0, 0.6); border: 2px solid var(--p5-white); color: var(--p5-white); padding: 20px; margin-bottom: 30px; transform: rotate(-1deg); backdrop-filter: blur(5px); /* 增加毛玻璃 */ }
 .widget-title { font-family: 'Bangers'; font-size: 1.5rem; color: var(--p5-yellow); border-bottom: 2px dashed #666; padding-bottom: 5px; margin-top: 0; }
 .tag-cloud { display: flex; flex-wrap: wrap; gap: 10px; }
 .tag-item { background: var(--p5-red); color: white; padding: 5px 10px; font-size: 0.8rem; text-decoration: none; font-weight: bold; transition: 0.2s; cursor: pointer; }
@@ -70,7 +158,7 @@ body {
 .page-btn:disabled { opacity: 0.5; cursor: not-allowed; background: #444; }
 .page-info { color: var(--p5-yellow); font-size: 1.5rem; align-self: center; text-shadow: 2px 2px 0 black; }
 
-/* --- 移动端 --- */
+/* --- 移动端适配 --- */
 @media (max-width: 768px) {
     .container { flex-direction: column; }
     .sidebar-area { order: 1; }
@@ -80,9 +168,7 @@ body {
     .footer-info { flex-direction: column; text-align: center; gap: 15px; }
 }
 
-/* ========================================= */
-/* ★★★ 文章卡片 & 编辑/删除按钮样式 ★★★ */
-/* ========================================= */
+/* --- 文章卡片 & 按钮 --- */
 .post-entry {
     background: var(--p5-white);
     margin-bottom: 30px;
@@ -91,63 +177,23 @@ body {
     transition: transform 0.3s;
     cursor: pointer;
 }
-
-.post-entry:hover {
-    transform: translateX(10px);
-}
-
-.post-entry::before {
-    content: "";
-    position: absolute;
-    left: 0; top: 0; bottom: 0; width: 10px;
-    background: var(--p5-black);
-}
-
-.post-content-wrap {
-    padding: 25px 30px 25px 40px;
-}
-
+.post-entry:hover { transform: translateX(10px); }
+.post-entry::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 10px; background: var(--p5-black); }
+.post-content-wrap { padding: 25px 30px 25px 40px; }
 .post-meta { font-size: 0.9rem; color: #666; margin-bottom: 5px; font-weight: bold; }
 .post-tag { background: var(--p5-yellow); color: black; padding: 0 5px; margin-left: 10px; }
 .post-title { font-size: 2rem; margin: 5px 0 15px 0; color: var(--p5-black); font-weight: 900; line-height: 1.2; }
 .post-title:hover { color: var(--p5-red); }
 .post-summary { font-size: 1rem; line-height: 1.6; color: #333; }
 
-/* 操作按钮容器 (默认隐藏，悬停显示) */
-.card-actions {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    display: flex;
-    gap: 10px;
-    opacity: 0; 
-    transition: opacity 0.2s;
-}
-
-/* 只有在电脑端悬停时才显示，防止手机没法点 */
-.post-entry:hover .card-actions {
-    opacity: 1;
-}
-
-.action-mini-btn {
-    font-family: 'Bangers';
-    font-size: 0.9rem;
-    padding: 4px 12px;
-    border: 2px solid var(--p5-black);
-    cursor: pointer;
-    transform: skewX(-10deg);
-    transition: 0.2s;
-    text-decoration: none;
-    display: inline-block;
-}
-
+.card-actions { position: absolute; bottom: 20px; right: 20px; display: flex; gap: 10px; opacity: 0; transition: opacity 0.2s; }
+.post-entry:hover .card-actions { opacity: 1; }
+.action-mini-btn { font-family: 'Bangers'; font-size: 0.9rem; padding: 4px 12px; border: 2px solid var(--p5-black); cursor: pointer; transform: skewX(-10deg); transition: 0.2s; text-decoration: none; display: inline-block; }
 .btn-edit { background: var(--p5-yellow); color: black; }
 .btn-edit:hover { background: white; transform: skewX(-10deg) scale(1.1); }
-
 .btn-del { background: var(--p5-black); color: white; border-color: white; }
 .btn-del:hover { background: var(--p5-red); transform: skewX(-10deg) scale(1.1); }
 
-/* 手机端总是显示按钮 */
 @media (max-width: 768px) {
     .card-actions { opacity: 1; position: relative; bottom: 0; right: 0; margin: 10px 30px 20px 40px; }
 }

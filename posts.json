@@ -4,7 +4,7 @@
     "title": "C#与Unity中读取NetCDF文件完整指南",
     "date": "2025.11.21",
     "tags": "UNITY / C# / NETCDF",
-    "summary": "介绍NetCDF科学数据格式及其在C#和Unity中的读取方法，包括环境配置、代码示例和实际应用场景帅"
+    "summary": "介绍NetCDF科学数据格式及其在C#和Unity中的读取方法，包括环境配置、代码示例和实际应用场景"
   },
   {
     "id": "unity_001",
