@@ -1,10 +1,17 @@
 [
   {
-    "id": "post_20251121163649",
-    "title": "C#与Unity中读取NetCDF文件完整指南",
-    "date": "2025.11.21",
-    "tags": "UNITY / C# / NETCDF",
-    "summary": "介绍NetCDF科学数据格式及其在C#和Unity中的读取方法，包括环境配置、代码示例和实际应用场景"
+    "id": "post_20251226070813",
+    "title": "Unity 无人机物理模拟：从 PID 控制到空气动力学，打造真实穿越机手感",
+    "date": "2025.12.26",
+    "tags": "UNITY / PHYSICS / SIMULATION",
+    "summary": "本文详细记录了在Unity中构建高拟真FPV穿越机物理模拟系统的全过程，涵盖PID控制、空气阻力、地面效应等关键技术，并提供了完整的开源实现。"
+  },
+  {
+    "id": "post_20251226054819",
+    "title": "Unity手柄开发指南：新旧输入系统按键映射详解",
+    "date": "2025.12.26",
+    "tags": "UNITY / INPUT SYSTEM / GAMEPAD",
+    "summary": "本文详细对比了Unity中传统Input Manager与新版Input System的手柄按键映射方法，涵盖Xbox、PS手柄的差异，并提供了清晰的映射表与路径说明。"
   },
   {
     "id": "unity_001",
@@ -12,12 +19,5 @@
     "date": "2025.11.20",
     "tags": "UNITY / C# / CAMERA",
     "summary": "深入解析Unity中三种相机控制方案，包含自由相机移动旋转和RTS游戏相机的地图导航、缩放旋转功能，提供完整C#代码实现。"
-  },
-  {
-    "id": "unity_002",
-    "title": "解决Unity导入Google.Protobuf.dll依赖错误",
-    "date": "2025.10.15",
-    "tags": "UNITY / GOOGLE.PROTOBUF / DLL",
-    "summary": "本文分析Unity导入Google.Protobuf.dll时出现的依赖错误，提供通过编译源码生成兼容版本的方法，确保与Unity平台兼容。"
   }
 ]

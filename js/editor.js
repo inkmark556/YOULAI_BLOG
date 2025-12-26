@@ -125,3 +125,122 @@ async function aiAutoFill() {
     } catch (e) { alert("NET ERROR"); }
     btn.disabled = false; btn.innerHTML = "⚡ AI GEN";
 }
+
+// --- 图片上传功能 ---
+function uploadImage() {
+    // 触发隐藏的文件选择器
+    document.getElementById('image-upload-input').click();
+}
+
+async function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // 检查文件类型
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+        alert('只支持上传图片文件 (jpg, jpeg, png, gif, webp)');
+        return;
+    }
+
+    // 检查文件大小 (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        alert('图片大小不能超过 5MB');
+        return;
+    }
+
+    // 创建 FormData
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+        // 显示上传进度
+        const startText = `\n\n![上传中...]()\n`;
+        insertText(startText, '');
+
+        // 上传到服务器
+        const res = await fetch('/api/upload-image', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await res.json();
+
+        if (result.success) {
+            // 替换上传中的文本为实际图片
+            const imageMarkdown = `![${file.name}](${result.url})`;
+            input.value = input.value.replace(startText, `\n\n${imageMarkdown}\n`);
+            input.dispatchEvent(new Event('input'));
+            console.log('图片上传成功:', result.url);
+        } else {
+            alert('上传失败: ' + result.message);
+            // 清除上传中的文本
+            input.value = input.value.replace(startText, '');
+            input.dispatchEvent(new Event('input'));
+        }
+    } catch (err) {
+        console.error('上传错误:', err);
+        alert('上传失败，请检查网络连接');
+        // 清除上传中的文本
+        input.value = input.value.replace(`\n\n![上传中...]()\n`, '');
+        input.dispatchEvent(new Event('input'));
+    }
+
+    // 重置文件选择器
+    event.target.value = '';
+}
+
+// --- 视频嵌入功能 ---
+function insertVideo() {
+    const videoUrl = prompt('请输入视频链接:\n\n支持:\n- YouTube: https://www.youtube.com/watch?v=...\n- Bilibili: https://www.bilibili.com/video/BV...\n- 腾讯视频: https://v.qq.com/x/page/...\n- 直接视频文件: .mp4 / .webm 链接');
+
+    if (!videoUrl) return;
+
+    let embedCode = '';
+
+    // 识别视频平台并生成嵌入代码
+    if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+        // YouTube 视频
+        let videoId = '';
+        if (videoUrl.includes('watch?v=')) {
+            videoId = videoUrl.split('watch?v=')[1].split('&')[0];
+        } else if (videoUrl.includes('youtu.be/')) {
+            videoId = videoUrl.split('youtu.be/')[1].split('?')[0];
+        }
+        embedCode = `\n<div class="video-container">\n  <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>\n</div>\n`;
+    }
+    else if (videoUrl.includes('bilibili.com')) {
+        // Bilibili 视频
+        let bvid = '';
+        if (videoUrl.includes('/video/')) {
+            bvid = videoUrl.split('/video/')[1].split('/')[0].split('?')[0];
+        }
+        embedCode = `\n<div class="video-container">\n  <iframe src="//player.bilibili.com/player.html?bvid=${bvid}&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>\n</div>\n`;
+    }
+    else if (videoUrl.includes('v.qq.com')) {
+        // 腾讯视频
+        let vid = '';
+        if (videoUrl.includes('/x/page/')) {
+            vid = videoUrl.split('/x/page/')[1].split('.')[0];
+        } else if (videoUrl.includes('/x/cover/')) {
+            vid = videoUrl.split('/')[videoUrl.split('/').length - 1].split('.')[0];
+        }
+        embedCode = `\n<div class="video-container">\n  <iframe src="https://v.qq.com/txp/iframe/player.html?vid=${vid}" frameborder="0" allowfullscreen></iframe>\n</div>\n`;
+    }
+    else if (videoUrl.match(/\.(mp4|webm|ogg)$/i)) {
+        // 直接视频文件
+        embedCode = `\n<div class="video-container">\n  <video controls>\n    <source src="${videoUrl}" type="video/${videoUrl.split('.').pop()}">\n    您的浏览器不支持视频播放。\n  </video>\n</div>\n`;
+    }
+    else {
+        // 未识别的链接，使用通用 iframe
+        const useIframe = confirm('未能识别视频平台，是否使用通用 iframe 嵌入？\n（如果是其他平台的分享链接，通常可以正常工作）');
+        if (useIframe) {
+            embedCode = `\n<div class="video-container">\n  <iframe src="${videoUrl}" frameborder="0" allowfullscreen></iframe>\n</div>\n`;
+        } else {
+            return;
+        }
+    }
+
+    // 插入到编辑器
+    insertText(embedCode, '');
+}

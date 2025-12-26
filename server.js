@@ -4,20 +4,82 @@ const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const multer = require('multer');
 
 const app = express();
 const PORT = 3000;
 const DEEPSEEK_API_KEY = "sk-25ca1265fd004d0fae0d7eeebf8c6d31";
+
+// 配置图片上传存储
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const uploadDir = path.join(__dirname, 'uploads', 'images');
+        // 确保目录存在
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        // 生成唯一文件名：时间戳 + 随机数 + 原扩展名
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+// 文件过滤器：只允许图片类型
+const fileFilter = (req, file, cb) => {
+    const allowedTypes = /jpeg|jpg|png|gif|webp/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+
+    if (mimetype && extname) {
+        return cb(null, true);
+    } else {
+        cb(new Error('只支持上传图片文件 (jpg, jpeg, png, gif, webp)'));
+    }
+};
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: fileFilter
+});
 
 // 允许跨域和解析JSON
 app.use(cors());
 app.use(bodyParser.json());
 // 把当前文件夹作为静态资源服务器（这样你就不用 Live Server 了）
 app.use(express.static(__dirname));
+// 允许访问上传的图片
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 数据文件路径
 const POSTS_DIR = path.join(__dirname, 'posts');
 const LIST_FILE = path.join(__dirname, 'posts.json');
+
+// --- 图片上传接口 ---
+app.post('/api/upload-image', upload.single('image'), (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: '没有上传文件' });
+        }
+
+        // 返回图片的访问路径
+        const imageUrl = `/uploads/images/${req.file.filename}`;
+
+        console.log(`[IMAGE UPLOADED] ${req.file.filename}`);
+        res.json({
+            success: true,
+            url: imageUrl,
+            filename: req.file.filename
+        });
+    } catch (error) {
+        console.error('上传错误:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
 // --- 新增：删除文章接口 (server.js) ---
 app.post('/api/delete', (req, res) => {
     try {

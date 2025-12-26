@@ -55,8 +55,12 @@
                 <button class="tool-btn" onclick="insertText('### ', '')">H3</button>
                 <button class="tool-btn" onclick="insertText('```csharp\n', '\n```')">{ }</button>
                 <button class="tool-btn" onclick="insertText('> ', '')">Ref</button>
-                <button class="tool-btn" onclick="insertText('![Alt](', ')')">Img</button>
+                <button class="tool-btn" onclick="uploadImage()" title="上传图片">📷 Img</button>
+                <button class="tool-btn" onclick="insertVideo()" title="插入视频">🎬 Vid</button>
                 <button class="tool-btn" onclick="insertText('[Text](', ')')">Link</button>
+                <!-- 隐藏的文件上传输入 -->
+                <input type="file" id="image-upload-input" accept="image/*" style="display:none;"
+                    onchange="handleImageUpload(event)">
             </div>
             <textarea id="markdown-input" placeholder="# Start hacking here..."></textarea>
         </div>

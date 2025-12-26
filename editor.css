@@ -218,3 +218,33 @@ body {
     border-bottom: 2px solid rgba(210, 5, 5, 0.3);
     font-weight: bold;
 }
+/* 视频容器样式 - 16:9 响应式，大屏占比优化 */
+.markdown-body .video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 比例 */
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    width: 80vw; /* 横屏时占据 80% 视口宽度 */
+    margin: 30px auto; /* 居中显示 */
+    border: 2px solid black;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.markdown-body .video-container iframe,
+.markdown-body .video-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* 移动端优化 - 小屏幕时占满宽度 */
+@media (max-width: 768px) {
+    .markdown-body .video-container {
+        width: 95vw;
+        margin: 20px auto;
+    }
+}
+
