@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+SC:wght@400;700;900&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+SC:wght@400;700;900&display=swap');
 
 :root {
     --p5-red: #D20505;
@@ -18,35 +18,92 @@ body {
     overflow: hidden;
 }
 
+/* 顶部区域样式 - 紧凑版 */
 .editor-header {
     background: var(--p5-black);
-    height: 140px;
+    height: auto;
     padding: 10px 20px;
-    border-bottom: 4px solid var(--p5-red);
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    border-bottom: 2px solid var(--p5-red);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     z-index: 10;
+    flex-shrink: 0;
 }
 
-.meta-group {
+.header-content {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    width: 100%;
+}
+
+/* 迷你封面上传框 */
+.cover-upload-mini {
+    width: 60px;
+    height: 60px;
+    border: 2px dashed #555;
+    background: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.cover-upload-mini:hover {
+    border-color: var(--p5-yellow);
+    background: rgba(252, 225, 0, 0.1);
+}
+
+.cover-upload-mini img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#cover-placeholder {
+    color: #888;
+    font-size: 1.5rem;
+}
+
+/* 头部输入区域 */
+.header-inputs {
     flex: 1;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
+.input-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.top-row {
+    height: 32px;
+}
+
+.bottom-row {
+    height: 28px;
+}
+
+/* 输入框样式优化 */
 .p5-input {
     background: #333;
-    border: 2px solid #555;
+    border: 1px solid #555;
     color: white;
-    padding: 8px;
+    padding: 0 10px;
     font-family: 'Noto Sans SC';
-    font-weight: bold;
     outline: none;
-    transform: skewX(-5deg);
     transition: 0.2s;
+    border-radius: 2px;
+    height: 100%;
+    box-sizing: border-box;
+    font-size: 0.9rem;
 }
 
 .p5-input:focus {
@@ -57,44 +114,57 @@ body {
 
 .p5-input::placeholder {
     color: #777;
+    font-size: 0.8rem;
 }
 
-.action-btn {
-    font-family: 'Bangers';
-    font-size: 1.5rem;
-    padding: 10px 25px;
-    border: none;
-    cursor: pointer;
-    transform: skewX(-10deg);
-    transition: 0.2s;
-    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+.title-input {
+    flex: 1;
+    font-weight: bold;
+    font-size: 1rem;
+    border-color: #666;
 }
 
-.btn-publish {
-    background: var(--p5-red);
-    color: white;
+.small-input {
+    width: 120px;
+    font-size: 0.8rem;
 }
 
-.btn-publish:hover {
+.flex-input {
+    flex: 1;
+    font-size: 0.8rem;
+}
+
+/* AI 按钮样式 (顶部) */
+.btn-ai {
     background: var(--p5-yellow);
     color: black;
-    transform: skewX(-10deg) scale(1.1);
+    height: 100%;
+    padding: 0 15px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 2px;
+    white-space: nowrap;
 }
 
-.btn-back {
-    background: #444;
-    color: white;
+.btn-ai:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
 }
 
-.btn-back:hover {
-    background: white;
-    color: black;
-}
-
+/* 工作区样式 */
 .workspace {
     flex: 1;
     display: flex;
-    height: calc(100vh - 140px);
+    /* 减去 header 和 footer 的高度 */
+    height: 100%;
+    overflow: hidden;
+    padding-bottom: 40px;
+    /* 为底部栏留出空间 */
 }
 
 .edit-pane {
@@ -102,30 +172,33 @@ body {
     background: #1a1a1a;
     display: flex;
     flex-direction: column;
-    border-right: 2px solid var(--p5-red);
+    border-right: 1px solid #444;
 }
 
 .toolbar {
-    background: #2a2a2a;
-    padding: 8px;
+    background: #252525;
+    padding: 5px 10px;
     display: flex;
     gap: 5px;
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid #333;
+    flex-shrink: 0;
 }
 
 .tool-btn {
-    background: #444;
+    background: #3a3a3a;
     color: #ccc;
-    border: 1px solid #555;
-    padding: 5px 10px;
+    border: 1px solid #444;
+    padding: 2px 8px;
     font-weight: bold;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    border-radius: 2px;
 }
 
 .tool-btn:hover {
     background: var(--p5-yellow);
     color: black;
+    border-color: var(--p5-yellow);
 }
 
 #markdown-input {
@@ -150,6 +223,71 @@ body {
     background-size: 20px 20px;
 }
 
+/* 底部悬浮栏样式 - 极致压缩 */
+.editor-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--p5-black);
+    border-top: 2px solid var(--p5-red);
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.5);
+    height: 40px;
+}
+
+.footer-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.footer-branding {
+    display: flex;
+    align-items: baseline;
+}
+
+.word-count-info {
+    display: flex;
+    align-items: center;
+}
+
+.footer-actions {
+    display: flex;
+    gap: 10px;
+    height: 100%;
+    align-items: center;
+}
+
+.action-btn {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-weight: bold;
+    font-size: 0.9rem;
+    padding: 0 15px;
+    height: 28px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    transition: 0.2s;
+}
+
+.btn-publish {
+    background: var(--p5-red);
+    color: white;
+}
+
+.btn-publish:hover {
+    filter: brightness(1.2);
+}
+
+/* Markdown 内容样式 */
 .markdown-body {
     max-width: 800px;
     margin: 0 auto;
@@ -179,33 +317,6 @@ body {
     border: 2px solid black;
 }
 
-@media (max-width: 768px) {
-    .editor-header {
-        height: auto;
-        flex-direction: column;
-        padding: 20px;
-    }
-
-    .meta-group {
-        width: 100%;
-        grid-template-columns: 1fr;
-    }
-
-    .workspace {
-        flex-direction: column;
-    }
-
-    .edit-pane {
-        height: 50%;
-    }
-
-    .preview-pane {
-        height: 50%;
-    }
-}
-
-/* editor.css 末尾添加 */
-
 /* P5R 风格行内代码 */
 .markdown-body code:not([class*="language-"]) {
     background-color: rgba(210, 5, 5, 0.1);
@@ -218,15 +329,16 @@ body {
     border-bottom: 2px solid rgba(210, 5, 5, 0.3);
     font-weight: bold;
 }
-/* 视频容器样式 - 16:9 响应式，大屏占比优化 */
+
+/* 视频容器样式 */
 .markdown-body .video-container {
     position: relative;
-    padding-bottom: 56.25%; /* 16:9 比例 */
+    padding-bottom: 56.25%;
     height: 0;
     overflow: hidden;
     max-width: 100%;
-    width: 80vw; /* 横屏时占据 80% 视口宽度 */
-    margin: 30px auto; /* 居中显示 */
+    width: 80vw;
+    margin: 30px auto;
     border: 2px solid black;
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
 }
@@ -240,16 +352,7 @@ body {
     height: 100%;
 }
 
-/* 移动端优化 - 小屏幕时占满宽度 */
-@media (max-width: 768px) {
-    .markdown-body .video-container {
-        width: 95vw;
-        margin: 20px auto;
-    }
-}
-
-
-/* Markdown 表格样式 - 虚线边框 */
+/* 表格样式 */
 .markdown-body table {
     border-collapse: collapse;
     width: 100%;
@@ -280,4 +383,41 @@ body {
 
 .markdown-body table tr:hover {
     background: rgba(252, 225, 0, 0.1);
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .editor-header {
+        padding: 10px;
+    }
+
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cover-upload-mini {
+        width: 100%;
+        height: 100px;
+    }
+
+    .header-inputs {
+        width: 100%;
+    }
+
+    .input-row {
+        flex-wrap: wrap;
+    }
+
+    .workspace {
+        flex-direction: column;
+    }
+
+    .edit-pane {
+        height: 50%;
+    }
+
+    .preview-pane {
+        height: 50%;
+    }
 }

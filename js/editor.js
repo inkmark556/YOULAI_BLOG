@@ -2,6 +2,7 @@
 // editor.js 新版：支持新建与编辑模式
 const input = document.getElementById('markdown-input');
 const preview = document.getElementById('preview-content');
+const previewPane = document.querySelector('.preview-pane');
 let currentEditingId = null;
 
 // 初始化
@@ -12,6 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (editId) {
         await loadPostForEdit(editId);
     }
+    updateWordCount(); // 初始化字数
 });
 
 // 加载已有文章
@@ -21,7 +23,7 @@ async function loadPostForEdit(id) {
         const posts = await listRes.json();
         const meta = posts.find(p => p.id === id);
         if (!meta) {
-            alert("POST NOT FOUND IN INDEX!");
+            alert("文章未找到！");
             return;
         }
         const contentRes = await fetch(`/posts/${id}.md`);
@@ -30,21 +32,70 @@ async function loadPostForEdit(id) {
         document.getElementById('in-date').value = meta.date;
         document.getElementById('in-tags').value = Array.isArray(meta.tags) ? meta.tags.join(' / ') : meta.tags;
         document.getElementById('in-summary').value = meta.summary;
+        document.getElementById('in-cover').value = meta.cover || '';  // 加载封面
+
+        // 如果有封面，显示预览
+        if (meta.cover) {
+            const previewImg = document.getElementById('cover-preview-img');
+            const placeholder = document.getElementById('cover-placeholder');
+            if (previewImg && placeholder) {
+                previewImg.src = meta.cover;
+                previewImg.style.display = 'block';
+                placeholder.style.display = 'none';
+            }
+        }
+
         input.value = content;
         currentEditingId = id;
         input.dispatchEvent(new Event('input'));
-        document.querySelector('.editor-header div div:nth-child(2)').innerText = "EDIT MODE: " + id;
-        document.querySelector('.btn-publish').innerText = "UPDATE LOG";
+
+        document.querySelector('.btn-publish').innerText = "更新文章";
     } catch (err) {
         console.error(err);
-        alert("FAILED TO LOAD POST DATA");
+        alert("加载文章数据失败");
     }
 }
 
-// 实时预览
+// 实时预览与字数统计
 input.addEventListener('input', () => {
     preview.innerHTML = marked.parse(input.value);
     Prism.highlightAllUnder(preview);
+    updateWordCount();
+});
+
+// 字数统计功能
+function updateWordCount() {
+    const text = input.value;
+    // 简单的字数统计：中文字符算1个，英文单词算1个
+    const cnChars = (text.match(/[\u4e00-\u9fa5]/g) || []).length;
+    const enWords = (text.replace(/[\u4e00-\u9fa5]/g, ' ').match(/[a-zA-Z0-9_\u0392-\u03c9\u0400-\u04FF]+(?=\s|$)/g) || []).length;
+    const total = cnChars + enWords;
+
+    const wordCountEl = document.getElementById('word-count-text');
+    if (wordCountEl) {
+        wordCountEl.innerText = total;
+    }
+}
+
+// 滚动同步功能
+let isScrolling = false;
+
+input.addEventListener('scroll', () => {
+    if (!isScrolling) {
+        isScrolling = true;
+        const percentage = input.scrollTop / (input.scrollHeight - input.clientHeight);
+        previewPane.scrollTop = percentage * (previewPane.scrollHeight - previewPane.clientHeight);
+        setTimeout(() => isScrolling = false, 10); // 防止死循环
+    }
+});
+
+previewPane.addEventListener('scroll', () => {
+    if (!isScrolling) {
+        isScrolling = true;
+        const percentage = previewPane.scrollTop / (previewPane.scrollHeight - previewPane.clientHeight);
+        input.scrollTop = percentage * (input.scrollHeight - input.clientHeight);
+        setTimeout(() => isScrolling = false, 10);
+    }
 });
 
 // 快捷插入
@@ -78,11 +129,12 @@ async function publish() {
         date: document.getElementById('in-date').value,
         tags: document.getElementById('in-tags').value,
         summary: document.getElementById('in-summary').value,
-        content: input.value
+        content: input.value,
+        cover: document.getElementById('in-cover').value || undefined  // 封面（可选）
     };
 
     if (!data.title || !data.content) {
-        Phantom.alert("MISSING DATA: Title and Content are required.", "DATA ERROR");
+        Phantom.alert("数据缺失: 标题和内容是必填项。", "数据错误");
         return;
     }
 
@@ -95,24 +147,30 @@ async function publish() {
         const result = await res.json();
 
         if (result.success) {
-            const msg = currentEditingId ? "LOG UPDATED!" : "NEW LOG CREATED!";
-            Phantom.confirm(msg + "\nReturn to Home?", () => {
+            const msg = currentEditingId ? "文章已更新！" : "新文章已创建！";
+            Phantom.confirm(msg + "\n返回首页？", () => {
                 // 修改为返回上一级 ../index.html
                 window.location.href = '/index.html';
-            }, "MISSION COMPLETE");
+            }, "操作成功");
         } else {
-            Phantom.alert("ERROR: " + result.message, "SERVER ERROR");
+            Phantom.alert("错误: " + result.message, "服务器错误");
         }
     } catch (err) {
-        Phantom.alert("NETWORK ERROR: Is server.js running?", "CONNECTION LOST");
+        Phantom.alert("网络错误: server.js 是否在运行？", "连接丢失");
     }
 }
-// AI 自动填充逻辑（保持原样）
+// AI 自动填充逻辑
 async function aiAutoFill() {
     const content = input.value;
-    const btn = document.querySelector('button[title="AUTO GENERATE INFO"]');
-    if (content.length < 10) { alert("TOO SHORT"); return; }
-    btn.innerHTML = "Thinking..."; btn.disabled = true;
+    // 注意：按钮现在在 header 里，class 是 btn-ai
+    const btn = document.querySelector('.btn-ai');
+
+    if (content.length < 10) { alert("内容太短，无法生成"); return; }
+
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 思考中...';
+    btn.disabled = true;
+
     try {
         const res = await fetch('/api/ai-generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content }) });
         const result = await res.json();
@@ -120,10 +178,73 @@ async function aiAutoFill() {
             if (!document.getElementById('in-title').value) document.getElementById('in-title').value = result.data.title;
             if (!document.getElementById('in-summary').value) document.getElementById('in-summary').value = result.data.summary;
             if (!document.getElementById('in-tags').value) document.getElementById('in-tags').value = result.data.tags;
-            btn.innerHTML = "OK!";
-        } else { alert("AI ERROR"); }
-    } catch (e) { alert("NET ERROR"); }
-    btn.disabled = false; btn.innerHTML = "⚡ AI GEN";
+            btn.innerHTML = '<i class="fas fa-check"></i> 完成!';
+        } else { alert("AI 生成失败"); }
+    } catch (e) { alert("网络错误"); }
+
+    setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }, 2000);
+}
+
+// 封面上传功能
+function uploadCover() {
+    document.getElementById('cover-upload-input').click();
+}
+
+async function handleCoverUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // 检查文件类型
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+        alert('只支持上传图片文件 (jpg, jpeg, png, gif, webp)');
+        return;
+    }
+
+    // 检查文件大小 (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        alert('图片大小不能超过 5MB');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+        const res = await fetch('/api/upload-image', {
+            method: 'POST',
+            body: formData
+        });
+        const result = await res.json();
+
+        if (result.success) {
+            document.getElementById('in-cover').value = result.url;
+
+            // 显示封面预览
+            const previewImg = document.getElementById('cover-preview-img');
+            const placeholder = document.getElementById('cover-placeholder');
+
+            if (previewImg && placeholder) {
+                previewImg.src = result.url;
+                previewImg.style.display = 'block';
+                placeholder.style.display = 'none';
+            }
+
+            console.log('封面上传成功:', result.url);
+            // 迷你模式下不弹窗打扰，或者用小提示
+            // alert('封面上传成功！'); 
+        } else {
+            alert('封面上传失败: ' + result.message);
+        }
+    } catch (err) {
+        console.error('上传错误:', err);
+        alert('封面上传失败，请检查网络连接');
+    }
+
+    event.target.value = '';
 }
 
 // --- 图片上传功能 ---

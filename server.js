@@ -110,10 +110,11 @@ app.post('/api/delete', (req, res) => {
         res.status(500).json({ success: false, message: "DELETE FAILED" });
     }
 });
+
 // --- 核心功能：接收文章上传 ---
 app.post('/api/upload', (req, res) => {
     try {
-        const { title, id, date, tags, summary, content } = req.body;
+        const { title, id, date, tags, summary, content, cover } = req.body;
 
         // 1. 检查 posts 文件夹是否存在
         if (!fs.existsSync(POSTS_DIR)) fs.mkdirSync(POSTS_DIR);
@@ -135,7 +136,8 @@ app.post('/api/upload', (req, res) => {
             title,
             date,
             tags,
-            summary
+            summary,
+            cover
         };
 
         // 如果已存在同ID，则覆盖（编辑模式），否则添加到开头
@@ -156,6 +158,7 @@ app.post('/api/upload', (req, res) => {
         res.status(500).json({ success: false, message: 'SERVER ERROR' });
     }
 });
+
 // --- AI 辅助生成接口 (接入 DeepSeek) ---
 app.post('/api/ai-generate', async (req, res) => {
     try {
@@ -240,7 +243,6 @@ app.post('/api/ai-generate', async (req, res) => {
     }
 });
 
-// ... (后面的 app.listen 保持不变)
 app.listen(PORT, () => {
     console.log(`P5 Phantom Server running at http://localhost:${PORT}`);
 });

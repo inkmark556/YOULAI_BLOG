@@ -94,6 +94,7 @@ function renderPage(page) {
 
         const html = `
     <article class="post-entry" onclick="location.href='html/post.html?id=${post.id}'">
+        ${post.cover ? `<div class="post-cover" style="background-image: url('${post.cover}');"></div>` : ''}
         <div class="post-content-wrap">
             <div class="post-meta">${post.date} <span class="post-tag">${tagsDisplay}</span></div>
             <h2 class="post-title">${post.title}</h2>

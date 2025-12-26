@@ -1,13 +1,15 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHANTOM EDITOR | 新建日志</title>
+    <title>Youlai Note | 编辑器</title>
 
     <link rel="stylesheet" href="../editor.css">
     <link rel="stylesheet" href="../css/model.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
@@ -18,30 +20,33 @@
 
 <body>
     <header class="editor-header">
-        <div style="text-align:center; margin-right:20px;">
-            <div style="font-family:'Bangers'; color:var(--p5-red); font-size:1.5rem; line-height:1;">PHANTOM</div>
-            <div style="font-weight:900; color:white; font-size:0.8rem;">EDITOR_V1.2</div>
-        </div>
-
-        <div class="meta-group">
-            <input type="text" id="in-date" class="p5-input" placeholder="DATE (Auto)">
-
-            <div style="display:flex; gap:5px; grid-column: span 1;">
-                <input type="text" id="in-tags" class="p5-input" placeholder="TAGS" style="flex:1">
-                <button onclick="aiAutoFill()" class="p5-input"
-                    style="background:var(--p5-yellow); color:black; cursor:pointer; font-family:'Bangers'; border:2px solid black;"
-                    title="AUTO GENERATE INFO">
-                    ⚡ AI GEN
-                </button>
+        <!-- 顶部紧凑布局 -->
+        <div class="header-content">
+            <!-- 左侧：封面缩略图 -->
+            <div class="cover-upload-mini" onclick="uploadCover()" title="点击上传封面">
+                <img id="cover-preview-img" style="display: none;">
+                <div id="cover-placeholder">
+                    <i class="fas fa-image"></i>
+                </div>
+                <input type="file" id="cover-upload-input" accept="image/*" style="display:none;"
+                    onchange="handleCoverUpload(event)">
+                <input type="text" id="in-cover" style="display:none;">
             </div>
 
-            <input type="text" id="in-title" class="p5-input" placeholder="TITLE" style="grid-column: span 3;">
-            <input type="text" id="in-summary" class="p5-input" placeholder="SUMMARY" style="grid-column: span 3;">
-        </div>
-
-        <div style="display:flex; flex-direction:column; gap:10px;">
-            <button class="action-btn btn-publish" onclick="publish()">SEND CARD</button>
-            <button class="action-btn btn-back" onclick="window.location.href='../index.html'">EXIT</button>
+            <!-- 中间：主要信息输入 -->
+            <div class="header-inputs">
+                <div class="input-row top-row">
+                    <input type="text" id="in-title" class="p5-input title-input" placeholder="文章标题 (TITLE)">
+                    <button onclick="aiAutoFill()" class="action-btn btn-ai" title="AI 自动生成信息">
+                        <i class="fas fa-bolt"></i> AI 生成
+                    </button>
+                </div>
+                <div class="input-row bottom-row">
+                    <input type="text" id="in-date" class="p5-input small-input" placeholder="日期 (DATE)">
+                    <input type="text" id="in-tags" class="p5-input small-input" placeholder="标签 (TAGS)">
+                    <input type="text" id="in-summary" class="p5-input flex-input" placeholder="摘要 (SUMMARY)">
+                </div>
+            </div>
         </div>
     </header>
 
@@ -62,7 +67,7 @@
                 <input type="file" id="image-upload-input" accept="image/*" style="display:none;"
                     onchange="handleImageUpload(event)">
             </div>
-            <textarea id="markdown-input" placeholder="# Start hacking here..."></textarea>
+            <textarea id="markdown-input" placeholder="# Start writing here..."></textarea>
         </div>
 
         <div class="preview-pane">
@@ -71,6 +76,25 @@
             </div>
         </div>
     </div>
+
+    <!-- 底部悬浮栏 -->
+    <footer class="editor-footer">
+        <div class="footer-left">
+            <div class="footer-branding">
+                <span style="font-family:'Bangers'; color:var(--p5-red); font-size:1.2rem;">Youlai</span>
+                <span style="font-weight:900; color:white; font-size:1.2rem; margin-left: 5px;">Note</span>
+            </div>
+            <div class="word-count-info">
+                <span style="color: #888; font-size: 0.85rem;">字数:</span>
+                <span id="word-count-text"
+                    style="color: var(--p5-yellow); font-weight: bold; font-size: 0.85rem; margin-left: 5px;">0</span>
+            </div>
+        </div>
+
+        <div class="footer-actions">
+            <button class="action-btn btn-publish" onclick="publish()">发布文章</button>
+        </div>
+    </footer>
 
     <script src="../js/model.js"></script>
     <script src="../js/editor.js"></script>
