@@ -19,6 +19,9 @@ async function initApp() {
         // 初始状态：显示所有文章
         currentFilteredPosts = allPostsCache;
         renderPage(1);
+
+        // 加载社交媒体链接
+        loadSocialLinks();
     } catch (err) {
         container.innerHTML = `
             <div style="background:var(--p5-black); color:white; padding:20px; border:2px solid red; transform:rotate(-2deg);">
@@ -29,6 +32,35 @@ async function initApp() {
         `;
     }
 }
+
+// 加载社交媒体链接
+async function loadSocialLinks() {
+    try {
+        const res = await fetch('config.json');
+        if (!res.ok) return; // 如果配置文件不存在，静默失败
+
+        const config = await res.json();
+        const container = document.getElementById('social-links-container');
+
+        if (!container || !config.social) return;
+
+        // 生成社交媒体图标
+        container.innerHTML = '';
+        Object.entries(config.social).forEach(([key, social]) => {
+            const link = document.createElement('a');
+            link.href = social.url;
+            link.className = 'social-link';
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.title = social.label;
+            link.innerHTML = `<i class="${social.icon}"></i>`;
+            container.appendChild(link);
+        });
+    } catch (err) {
+        console.error('Failed to load social links:', err);
+    }
+}
+
 
 // 2. 核心：渲染当前页
 function renderPage(page) {

@@ -1,0 +1,34 @@
+{
+    "owner": {
+        "name": "又来",
+        "title": "Unity/APP/全栈开发",
+        "avatar": "posts/头像.jpg",
+        "bio": "游戏开发者 / Unity 技术爱好者"
+    },
+    "social": {
+        "github": {
+            "url": "https://github.com/youlai-code",
+            "icon": "fab fa-github",
+            "label": "GitHub"
+        },
+        "instagram": {
+            "url": "https://instagram.com/yourusername",
+            "icon": "fab fa-instagram",
+            "label": "Instagram"
+        },
+        "qq": {
+            "url": "https://qm.qq.com/q/SpmhrQhzi0",
+            "icon": "fab fa-qq",
+            "label": "QQ"
+        },
+        "email": {
+            "url": "mailto:your.email@example.com",
+            "icon": "fas fa-envelope",
+            "label": "Email"
+        }
+    },
+    "footer": {
+        "copyright": "© 2025 LIU MINGLIANG.",
+        "marquee": "LATEST COMMIT: FIXED NETWORK SYNC BUG IN RTS PROJECT +++ NEW SHADER DEMO RELEASED ON GITHUB +++"
+    }
+}

@@ -197,3 +197,43 @@ body {
 @media (max-width: 768px) {
     .card-actions { opacity: 1; position: relative; bottom: 0; right: 0; margin: 10px 30px 20px 40px; }
 }
+/* 社交媒体链接样式 */
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed #666;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--p5-black);
+    color: var(--p5-white);
+    text-decoration: none;
+    font-size: 1.3rem;
+    transition: all 0.3s;
+    border: 2px solid var(--p5-white);
+    position: relative;
+}
+
+.social-link:hover {
+    background: var(--p5-red);
+    color: var(--p5-yellow);
+    transform: scale(1.15) rotate(5deg);
+    border-color: var(--p5-yellow);
+    box-shadow: 0 5px 15px rgba(252, 225, 0, 0.4);
+}
+
+.social-link i {
+    transition: transform 0.3s;
+}
+
+.social-link:hover i {
+    transform: scale(1.1);
+}
