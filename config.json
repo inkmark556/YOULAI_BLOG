@@ -1,4 +1,4 @@
-{
+﻿{
     "owner": {
         "name": "又来",
         "title": "Unity/APP/全栈开发",
@@ -22,7 +22,7 @@
             "label": "QQ"
         },
         "email": {
-            "url": "mailto:your.email@example.com",
+            "url": "mailto:tenb68@126.com",
             "icon": "fas fa-envelope",
             "label": "Email"
         }

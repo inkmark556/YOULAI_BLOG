@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 
 <head>
@@ -51,12 +51,6 @@
             <main class="content-area" id="blog-list-container">
                 <h2 style="color:white; font-family:'Bangers'; text-align:center; margin-top:50px;">INITIALIZING...</h2>
             </main>
-
-            <div class="pagination-bar" id="pagination-controls" style="display:none;">
-                <button class="page-btn" id="prev-btn" onclick="changePage(-1)">PREV</button>
-                <span class="page-info" id="page-indicator">1 / 1</span>
-                <button class="page-btn" id="next-btn" onclick="changePage(1)">NEXT</button>
-            </div>
         </div>
 
         <aside class="sidebar-area">
@@ -72,6 +66,10 @@
                 <!-- 社交媒体链接 -->
                 <div class="social-links" id="social-links-container">
                     <!-- 将由 JavaScript 动态加载 -->
+                </div>
+                <!-- 邮箱显示区域 -->
+                <div id="email-display" class="email-box" style="display:none;">
+                    <i class="fas fa-envelope"></i> <span id="email-text"></span>
                 </div>
             </div>
             <div class="widget-box">

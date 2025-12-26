@@ -46,7 +46,21 @@ async function loadSocialLinks() {
 
         // 生成社交媒体图标
         container.innerHTML = '';
+        const emailBox = document.getElementById('email-display');
+        const emailText = document.getElementById('email-text');
+
         Object.entries(config.social).forEach(([key, social]) => {
+            // 特殊处理邮箱：显示为文本
+            if (key === 'email') {
+                if (emailBox && emailText) {
+                    emailBox.style.display = 'block';
+                    // 移除 mailto: 前缀显示
+                    const displayEmail = social.url.replace('mailto:', '');
+                    emailText.innerText = displayEmail;
+                }
+                return;
+            }
+
             const link = document.createElement('a');
             link.href = social.url;
             link.className = 'social-link';
@@ -62,45 +76,22 @@ async function loadSocialLinks() {
 }
 
 
-// 2. 核心：渲染当前页
+// 2. 核心：渲染所有文章（已移除分页）
 function renderPage(page) {
     const container = document.getElementById('blog-list-container');
-    const pagination = document.getElementById('pagination-controls');
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
-    const indicator = document.getElementById('page-indicator');
-
-    // 计算分页数据
-    const totalPosts = currentFilteredPosts.length;
-    const totalPages = Math.ceil(totalPosts / ITEMS_PER_PAGE);
-
-    // 边界检查
-    if (page < 1) page = 1;
-    if (page > totalPages && totalPages > 0) page = totalPages;
-    currentPage = page;
 
     container.innerHTML = '';
 
-    if (totalPosts === 0) {
+    if (currentFilteredPosts.length === 0) {
         container.innerHTML = `<h2 style="color:white; font-family:'Bangers'; margin-top:50px;">NO DATA FOUND...</h2>`;
-        pagination.style.display = 'none';
         return;
     }
 
-    // 切片：获取当前页的数据
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    const end = start + ITEMS_PER_PAGE;
-    const postsToShow = currentFilteredPosts.slice(start, end);
-
-    // 渲染文章卡片
+    // 渲染所有文章
     container.style.opacity = 0;
-    postsToShow.forEach(post => {
+    currentFilteredPosts.forEach(post => {
         let tagsDisplay = Array.isArray(post.tags) ? post.tags.join(' / ') : post.tags;
 
-        // 注意：这里增加了 onclick="event.stopPropagation()" 防止点击按钮时触发卡片跳转
-        // js/index.js 部分修改 (找到 renderPage 函数中的 html 模板部分)
-
-        // ...
         const html = `
     <article class="post-entry" onclick="location.href='html/post.html?id=${post.id}'">
         <div class="post-content-wrap">
@@ -121,24 +112,16 @@ function renderPage(page) {
         </div>
     </article>
 `;
-        // ...
         container.innerHTML += html;
     });
+
     // 淡入动画
     setTimeout(() => { container.style.opacity = 1; }, 50);
-
-    // 更新分页控件状态
-    pagination.style.display = 'flex';
-    indicator.innerText = `${currentPage} / ${totalPages}`;
-    prevBtn.disabled = currentPage === 1;
-    nextBtn.disabled = currentPage === totalPages;
 }
 
-// 3. 翻页功能
+// 3. 翻页功能（已移除，保留函数避免错误）
 function changePage(direction) {
-    renderPage(currentPage + direction);
-    // 翻页后滚动到顶部
-    document.querySelector('.container').scrollIntoView({ behavior: 'smooth' });
+    // 不再需要翻页
 }
 
 // 4. 筛选功能

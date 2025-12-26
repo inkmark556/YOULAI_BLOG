@@ -8,15 +8,19 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+SC:wght@400;700;900&display=swap');
+
         /* 视频容器样式 - 16:9 响应式，大屏占比优化 */
         .markdown-body .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 比例 */
+            padding-bottom: 56.25%;
+            /* 16:9 比例 */
             height: 0;
             overflow: hidden;
             max-width: 100%;
-            width: 80vw; /* 横屏时占据 80% 视口宽度 */
-            margin: 30px auto; /* 居中显示 */
+            width: 80vw;
+            /* 横屏时占据 80% 视口宽度 */
+            margin: 30px auto;
+            /* 居中显示 */
             border: 3px solid black;
             box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
         }
@@ -37,6 +41,7 @@
                 margin: 20px auto;
             }
         }
+
         /* Markdown 表格样式 - 虚线边框 */
         .markdown-body table {
             border-collapse: collapse;
@@ -69,8 +74,6 @@
         .markdown-body table tr:hover {
             background: rgba(252, 225, 0, 0.1);
         }
-
-
     </style>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
@@ -357,15 +360,19 @@
                 padding: 30px;
             }
         }
+
         /* 视频容器样式 - 16:9 响应式，大屏占比优化 */
         .markdown-body .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 比例 */
+            padding-bottom: 56.25%;
+            /* 16:9 比例 */
             height: 0;
             overflow: hidden;
             max-width: 100%;
-            width: 80vw; /* 横屏时占据 80% 视口宽度 */
-            margin: 30px auto; /* 居中显示 */
+            width: 80vw;
+            /* 横屏时占据 80% 视口宽度 */
+            margin: 30px auto;
+            /* 居中显示 */
             border: 3px solid black;
             box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
         }
@@ -386,6 +393,7 @@
                 margin: 20px auto;
             }
         }
+
         /* Markdown 表格样式 - 虚线边框 */
         .markdown-body table {
             border-collapse: collapse;
@@ -418,8 +426,6 @@
         .markdown-body table tr:hover {
             background: rgba(252, 225, 0, 0.1);
         }
-
-
     </style>
 
     <script>
@@ -515,8 +521,10 @@
                     Prism.highlightAll();
 
                     // 4. 【新】渲染数学公式 (MathJax)
-                    if (window.MathJax) {
-                        window.MathJax.typesetPromise([renderArea]);
+                    if (window.MathJax && window.MathJax.typesetPromise) {
+                        window.MathJax.typesetPromise([renderArea]).catch((err) => {
+                            console.warn('MathJax rendering failed:', err);
+                        });
                     }
 
                     // 5. 生成目录
@@ -576,5 +584,3 @@
 </body>
 
 </html>
-
-
