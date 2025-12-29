@@ -40,22 +40,22 @@
 │   └── pages/              # Astro 页面组件
 │       ├── index.astro     # 博客主页
 │       └── posts/          # 文章详情页
+├── scripts/                # 自动化脚本
+│   └── sync_to_github.bat  # 一键同步脚本
 ├── server.js               # Node.js 后端服务 (CMS Backend)
 ├── astro.config.mjs        # Astro 配置文件
 └── package.json            # 项目依赖
 ```
 
-## 功能说明
+## 混合工作流 (Hybrid Workflow)
 
--   **双端架构**:
-    -   **前台 (Port 4321)**: 纯静态展示，无管理按钮，沉浸式阅读体验。
-    -   **后台 (Port 3000)**: 完整的文章增删改查 (CRUD) 功能。
--   **P5 风格 UI**: 独特的黑红白配色，动态背景与微交互动画。
--   **AI 辅助写作**: 集成 DeepSeek API，一键生成文章元数据。
--   **资源清理**: 提供自动化脚本 (`cleanup.bat`) 清理未引用的孤儿图片。
--   **响应式设计**: 完美适配桌面端与移动端。
+本项目采用 **本地管理 + 云端发布** 的混合模式：
 
-## 快速启动
+1.  **本地创作 (Local)**: 在本地运行 `server.js`，使用 Admin Dashboard 撰写文章、上传图片。
+2.  **自动同步 (Sync)**: 使用 `scripts/sync_to_github.bat` 脚本将本地更改推送到 GitHub。
+3.  **云端构建 (Cloud)**: Cloudflare Pages 自动检测 GitHub 更新，构建静态网站并发布。
+
+## 快速启动 (本地开发)
 
 1.  **安装依赖**
     ```bash
@@ -64,29 +64,33 @@
 
 2.  **启动服务 (双终端运行)**
 
-    *终端 1 (后台服务):*
+    *终端 1 (后台服务 - 用于写文章):*
     ```bash
     node server.js
     ```
     > 访问: http://localhost:3000 (管理后台)
 
-    *终端 2 (静态站点):*
+    *终端 2 (静态预览 - 用于看效果):*
     ```bash
     npm run dev
     ```
     > 访问: http://localhost:4321 (博客主页)
 
-## 文章发布与管理
+## 部署指南 (Cloudflare Pages)
 
-1.  访问 **http://localhost:3000** 进入管理后台。
-2.  点击 **+ NEW LOG** 新建文章，或点击 **EDIT** 修改现有文章。
-3.  在编辑器中输入 Markdown 内容，支持 **AI 生成** 元数据。
-4.  点击 **发布文章**，数据将自动同步到 `src/content/`。
-5.  刷新 **http://localhost:4321** 查看更新。
+本项目已针对 Cloudflare Pages 优化。请按照以下配置进行部署：
 
-## 资源清理
+1.  **连接仓库**: 授权 Cloudflare 访问你的 GitHub 仓库。
+2.  **构建配置 (Build Settings)**:
+    -   **构建命令 (Build command)**: `npm run build`
+    -   **构建输出目录 (Build output directory)**: `dist`
+    -   **根目录 (Root directory)**: *(留空)*
+3.  **环境变量 (Environment Variables)**:
+    -   `NODE_VERSION`: `20`
 
-运行根目录下的 `cleanup.bat` 脚本，可自动检测并删除 `public/uploads/images` 中未被引用的图片文件，释放存储空间。
+## 常用脚本
+
+-   **`cleanup.bat`**: 自动清理 `public/uploads/images` 中未被引用的孤儿图片，释放空间。
 
 ## 联系方式
 
