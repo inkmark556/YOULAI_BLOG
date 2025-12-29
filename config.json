@@ -25,10 +25,15 @@
             "url": "mailto:tenb68@126.com",
             "icon": "fas fa-envelope",
             "label": "Email"
+        },
+        "bilibili": {
+            "url": "https://space.bilibili.com/65726055",
+            "icon": "fab fa-bilibili",
+            "label": "Bilibili"
         }
     },
     "footer": {
         "copyright": "© 2025 LIU MINGLIANG.",
-        "marquee": "LATEST COMMIT: FIXED NETWORK SYNC BUG IN RTS PROJECT +++ NEW SHADER DEMO RELEASED ON GITHUB +++"
+        "marquee": "最新提交：修复了 RTS 项目中的网络同步 Bug +++ GitHub 上发布了新的着色器演示 +++ 正在研究 Unity ECS 系统 +++"
     }
 }

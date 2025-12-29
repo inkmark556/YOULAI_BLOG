@@ -70,6 +70,14 @@ async function loadSocialLinks() {
             link.innerHTML = `<i class="${social.icon}"></i>`;
             container.appendChild(link);
         });
+
+        // 加载底部滚动文字
+        if (config.footer && config.footer.marquee) {
+            const marqueeContent = document.querySelector('.marquee-content');
+            if (marqueeContent) {
+                marqueeContent.innerText = config.footer.marquee;
+            }
+        }
     } catch (err) {
         console.error('Failed to load social links:', err);
     }
