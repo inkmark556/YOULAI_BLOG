@@ -245,6 +245,96 @@ app.post('/api/ai-generate', async (req, res) => {
     }
 });
 
+// --- 资源清理接口 ---
+app.post('/api/cleanup', (req, res) => {
+    try {
+        console.log("[CLEANUP] Starting resource cleanup...");
+
+        // 1. 获取所有上传的图片
+        const uploadDir = path.join(__dirname, 'uploads', 'images');
+        if (!fs.existsSync(uploadDir)) {
+            return res.json({ success: true, message: "No uploads directory found.", deleted: [], spaceReclaimed: 0 });
+        }
+
+        const allFiles = fs.readdirSync(uploadDir);
+        const imageFiles = allFiles.filter(file => /\.(jpg|jpeg|png|gif|webp)$/i.test(file));
+
+        console.log(`[CLEANUP] Found ${imageFiles.length} images in uploads.`);
+
+        // 2. 收集所有引用
+        const referencedFiles = new Set();
+
+        // 2.1 从 posts.json 中收集封面引用
+        if (fs.existsSync(LIST_FILE)) {
+            const posts = JSON.parse(fs.readFileSync(LIST_FILE, 'utf8'));
+            posts.forEach(post => {
+                if (post.cover) {
+                    const filename = path.basename(post.cover);
+                    referencedFiles.add(filename);
+                }
+            });
+        }
+
+        // 2.2 从 posts/*.md 中收集内容引用
+        if (fs.existsSync(POSTS_DIR)) {
+            const mdFiles = fs.readdirSync(POSTS_DIR).filter(f => f.endsWith('.md'));
+            mdFiles.forEach(mdFile => {
+                const content = fs.readFileSync(path.join(POSTS_DIR, mdFile), 'utf8');
+                // 匹配 Markdown 图片: ![alt](/uploads/images/filename)
+                const mdRegex = /\/uploads\/images\/([^\s)]+)/g;
+                let match;
+                while ((match = mdRegex.exec(content)) !== null) {
+                    referencedFiles.add(match[1]);
+                }
+
+                // 匹配 HTML 图片: <img src="/uploads/images/filename">
+                const htmlRegex = /src=["']\/uploads\/images\/([^"']+)["']/g;
+                while ((match = htmlRegex.exec(content)) !== null) {
+                    referencedFiles.add(match[1]);
+                }
+            });
+        }
+
+        console.log(`[CLEANUP] Found ${referencedFiles.size} referenced images.`);
+
+        // 3. 找出未引用的图片并删除
+        const deletedFiles = [];
+        let spaceReclaimed = 0;
+
+        imageFiles.forEach(file => {
+            if (!referencedFiles.has(file)) {
+                const filePath = path.join(uploadDir, file);
+                const stats = fs.statSync(filePath);
+                spaceReclaimed += stats.size;
+
+                fs.unlinkSync(filePath);
+                deletedFiles.push(file);
+                console.log(`[CLEANUP] Deleted orphan: ${file}`);
+            }
+        });
+
+        // 格式化空间大小
+        const formatSize = (bytes) => {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        };
+
+        res.json({
+            success: true,
+            message: `Cleanup complete. Deleted ${deletedFiles.length} files.`,
+            deleted: deletedFiles,
+            spaceReclaimed: formatSize(spaceReclaimed)
+        });
+
+    } catch (error) {
+        console.error("[CLEANUP] Error:", error);
+        res.status(500).json({ success: false, message: "Cleanup failed: " + error.message });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`P5 Phantom Server running at http://localhost:${PORT}`);
 });
