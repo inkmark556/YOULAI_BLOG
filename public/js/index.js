@@ -101,7 +101,7 @@ function renderPage(page) {
         let tagsDisplay = Array.isArray(post.tags) ? post.tags.join(' / ') : post.tags;
 
         const html = `
-    <article class="post-entry" onclick="location.href='html/post.html?id=${post.id}'">
+    <article class="post-entry" onclick="location.href='/posts/${post.id}'">
         ${post.cover ? `<div class="post-cover" style="background-image: url('${post.cover}');"></div>` : ''}
         <div class="post-content-wrap">
             <div class="post-meta">${post.date} <span class="post-tag">${tagsDisplay}</span></div>
@@ -111,7 +111,7 @@ function renderPage(page) {
         
         <div class="card-actions">
             <button class="action-mini-btn btn-edit" 
-                onclick="event.stopPropagation(); location.href='html/editor.html?id=${post.id}'">
+                onclick="event.stopPropagation(); location.href='editor.html?id=${post.id}'">
                 EDIT
             </button>
             <button class="action-mini-btn btn-del" 

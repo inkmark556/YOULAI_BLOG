@@ -8,13 +8,14 @@ const multer = require('multer');
 
 const app = express();
 const PORT = 3000;
-require('dotenv').config(); // 新增这行
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY; // 改成这行
+require('dotenv').config();
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 
 // 配置图片上传存储
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const uploadDir = path.join(__dirname, 'uploads', 'images');
+        // 修改路径指向 public/uploads/images
+        const uploadDir = path.join(__dirname, 'public', 'uploads', 'images');
         // 确保目录存在
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
@@ -50,14 +51,24 @@ const upload = multer({
 // 允许跨域和解析JSON
 app.use(cors());
 app.use(bodyParser.json());
-// 把当前文件夹作为静态资源服务器（这样你就不用 Live Server 了）
-app.use(express.static(__dirname));
-// 允许访问上传的图片
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// 数据文件路径
-const POSTS_DIR = path.join(__dirname, 'posts');
-const LIST_FILE = path.join(__dirname, 'posts.json');
+// --- 静态资源服务配置 (Astro 适配) ---
+// 1. 默认访问 admin 文件夹 (编辑器)
+app.use(express.static(path.join(__dirname, 'admin')));
+// 2. 让编辑器能加载 public 下的 css/js
+app.use('/public', express.static(path.join(__dirname, 'public')));
+// 3. 让编辑器能显示上传的图片
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+
+// 4. 提供文章数据接口 (供编辑器使用)
+app.get('/posts.json', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src', 'content', 'posts.json'));
+});
+app.use('/posts', express.static(path.join(__dirname, 'src', 'content', 'posts')));
+
+// 数据文件路径 (Astro 适配)
+const POSTS_DIR = path.join(__dirname, 'src', 'content', 'posts');
+const LIST_FILE = path.join(__dirname, 'src', 'content', 'posts.json');
 
 // --- 图片上传接口 ---
 app.post('/api/upload-image', upload.single('image'), (req, res) => {
@@ -66,7 +77,7 @@ app.post('/api/upload-image', upload.single('image'), (req, res) => {
             return res.status(400).json({ success: false, message: '没有上传文件' });
         }
 
-        // 返回图片的访问路径
+        // 返回图片的访问路径 (注意这里返回的是相对路径，供前端使用)
         const imageUrl = `/uploads/images/${req.file.filename}`;
 
         console.log(`[IMAGE UPLOADED] ${req.file.filename}`);
@@ -81,7 +92,7 @@ app.post('/api/upload-image', upload.single('image'), (req, res) => {
     }
 });
 
-// --- 新增：删除文章接口 (server.js) ---
+// --- 删除文章接口 ---
 app.post('/api/delete', (req, res) => {
     try {
         const { id } = req.body;
@@ -119,11 +130,10 @@ app.post('/api/upload', (req, res) => {
         console.log(`[API] Upload request received for ${id}. Cover: ${cover}`);
 
         // 1. 检查 posts 文件夹是否存在
-        if (!fs.existsSync(POSTS_DIR)) fs.mkdirSync(POSTS_DIR);
+        if (!fs.existsSync(POSTS_DIR)) fs.mkdirSync(POSTS_DIR, { recursive: true });
 
         // 2. 写入 .md 文件
         const filePath = path.join(POSTS_DIR, `${id}.md`);
-        // 这里的 content 是纯 Markdown，我们直接写入
         fs.writeFileSync(filePath, content, 'utf8');
 
         // 3. 更新 posts.json (文章索引)
@@ -169,8 +179,6 @@ app.post('/api/ai-generate', async (req, res) => {
 
         console.log("正在呼叫 DeepSeek...");
 
-        // 1. 构造 Prompt（提示词）
-        // 我们要求 AI 必须返回严格的 JSON 格式，这样前端才好填空
         const systemPrompt = `
         你是一个专业的Unity技术博客助手。请分析用户输入的 Markdown 文章内容，并提取/生成以下元数据。
         请严格按照 JSON 格式返回，不要包含 markdown 代码块标记（如 \`\`\`json）。
@@ -182,7 +190,6 @@ app.post('/api/ai-generate', async (req, res) => {
         }
         `;
 
-        // 2. 发送请求给 DeepSeek API
         const response = await fetch('https://api.deepseek.com/chat/completions', {
             method: 'POST',
             headers: {
@@ -190,17 +197,16 @@ app.post('/api/ai-generate', async (req, res) => {
                 'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
             },
             body: JSON.stringify({
-                model: "deepseek-chat", // 或者 deepseek-coder
+                model: "deepseek-chat",
                 messages: [
                     { role: "system", content: systemPrompt },
                     { role: "user", content: content }
                 ],
-                temperature: 0.7, // 稍微有一点创造性
+                temperature: 0.7,
                 max_tokens: 500
             })
         });
 
-        // 3. 处理 API 返回
         if (!response.ok) {
             const errText = await response.text();
             console.error("DeepSeek API Error:", errText);
@@ -210,8 +216,6 @@ app.post('/api/ai-generate', async (req, res) => {
         const data = await response.json();
         const aiContent = data.choices[0].message.content.trim();
 
-        // 4. 解析 AI 返回的 JSON 字符串
-        // 有时候 AI 会手贱加上 ```json ... ```，我们需要清洗一下
         let cleanJson = aiContent.replace(/```json/g, '').replace(/```/g, '').trim();
 
         let metaData;
@@ -219,7 +223,6 @@ app.post('/api/ai-generate', async (req, res) => {
             metaData = JSON.parse(cleanJson);
         } catch (e) {
             console.error("JSON Parse Error. AI returned:", aiContent);
-            // 如果解析失败，做个降级处理，直接把原始文本塞回去
             metaData = {
                 title: "AI Parsing Error",
                 summary: aiContent,
@@ -229,7 +232,6 @@ app.post('/api/ai-generate', async (req, res) => {
 
         console.log("DeepSeek 响应成功:", metaData);
 
-        // 5. 返回给前端
         res.json({
             success: true,
             data: {
@@ -251,7 +253,7 @@ app.post('/api/cleanup', (req, res) => {
         console.log("[CLEANUP] Starting resource cleanup...");
 
         // 1. 获取所有上传的图片
-        const uploadDir = path.join(__dirname, 'uploads', 'images');
+        const uploadDir = path.join(__dirname, 'public', 'uploads', 'images');
         if (!fs.existsSync(uploadDir)) {
             return res.json({ success: true, message: "No uploads directory found.", deleted: [], spaceReclaimed: 0 });
         }
@@ -313,7 +315,6 @@ app.post('/api/cleanup', (req, res) => {
             }
         });
 
-        // 格式化空间大小
         const formatSize = (bytes) => {
             if (bytes === 0) return '0 B';
             const k = 1024;

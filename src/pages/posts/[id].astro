@@ -1,0 +1,72 @@
+---
+// src/pages/posts/[id].astro
+import list from '../../content/posts.json';
+import fs from 'node:fs';
+import path from 'node:path';
+import { marked } from 'marked';
+
+// 1. 告诉 Astro 我们有哪些文章要生成
+export async function getStaticPaths() {
+  return list.map(post => ({
+    params: { id: post.id },
+    props: { post }
+  }));
+}
+
+// 2. 获取当前文章数据
+const { post } = Astro.props;
+const { id } = Astro.params;
+
+// 3. 读取 Markdown 内容
+const mdPath = path.join(process.cwd(), 'src/content/posts', `${id}.md`);
+const content = fs.readFileSync(mdPath, 'utf-8');
+const htmlContent = marked.parse(content);
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>{post.title} | Youlai Note</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/background.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/posts.css">
+    <link rel="stylesheet" href="/css/model.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Prism for Code Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="/" class="brand-logo">Youlai Note</a>
+        <div class="menu-list">
+             <a href="/" class="menu-btn">◄ BACK</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <main class="content-area" style="background: white; padding: 40px; border: 3px solid black; box-shadow: 10px 10px 0 rgba(0,0,0,0.2);">
+            <h1 style="font-family: 'Bangers'; font-size: 2.5rem; margin-bottom: 10px;">{post.title}</h1>
+            <div class="post-meta" style="color:#666; margin-bottom: 20px;">
+                {post.date} · <span style="background:var(--p5-red); color:white; padding:2px 5px; font-size:0.8rem;">{post.tags}</span>
+            </div>
+            
+            {post.cover && <img src={post.cover} style="width:100%; max-height:400px; object-fit:cover; border:2px solid black; margin-bottom:30px;" />}
+
+            <div class="markdown-body" set:html={htmlContent}></div>
+        </main>
+    </div>
+    
+    <footer class="footer-bar" style="margin-top: 50px;">
+        <div class="footer-info">
+             <div>© 2025 YOU LAI NOTE</div>
+        </div>
+    </footer>
+</body>
+</html>
