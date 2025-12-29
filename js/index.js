@@ -155,6 +155,31 @@ function filterPosts(category) {
     renderPage(1);
 }
 
+// 5. 搜索功能
+function searchPosts(keyword) {
+    // 取消所有分类按钮的高亮
+    document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
+
+    if (!keyword || keyword.trim() === '') {
+        // 如果搜索为空，恢复到 HOME 状态
+        document.getElementById('btn-home').classList.add('active');
+        currentFilteredPosts = allPostsCache;
+    } else {
+        const lowerKeyword = keyword.toLowerCase().trim();
+        currentFilteredPosts = allPostsCache.filter(post => {
+            const titleMatch = post.title.toLowerCase().includes(lowerKeyword);
+            const summaryMatch = post.summary.toLowerCase().includes(lowerKeyword);
+            const tagsMatch = Array.isArray(post.tags) ?
+                post.tags.join(' ').toLowerCase().includes(lowerKeyword) :
+                post.tags.toLowerCase().includes(lowerKeyword);
+
+            return titleMatch || summaryMatch || tagsMatch;
+        });
+    }
+
+    renderPage(1);
+}
+
 // js/index.js 中的 deletePost 函数
 
 async function deletePost(id) {

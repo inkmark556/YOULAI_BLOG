@@ -43,6 +43,11 @@
             <a href="#" id="btn-shader" class="menu-btn" onclick="filterPosts('SHADER'); return false;">SHADER</a>
             <a href="html/post.html?id=about" id="btn-about" class="menu-btn">ABOUT</a>
 
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="SEARCH LOGS..." oninput="searchPosts(this.value)">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+
             <a href="html/editor.html" class="menu-btn"
                 style="background:var(--p5-red); color:white; margin-left:20px;">
                 + NEW LOG

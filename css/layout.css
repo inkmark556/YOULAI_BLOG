@@ -57,6 +57,48 @@
     transform: scale(1.05);
 }
 
+/* --- 搜索框 --- */
+.search-box {
+    position: relative;
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+}
+
+#search-input {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 1rem;
+    padding: 8px 35px 8px 15px;
+    border: 2px solid var(--p5-black);
+    background: var(--p5-white);
+    color: var(--p5-black);
+    outline: none;
+    transform: skewX(-10deg);
+    transition: all 0.3s;
+    width: 150px;
+}
+
+#search-input:focus {
+    background: var(--p5-black);
+    color: var(--p5-white);
+    border-color: var(--p5-red);
+    width: 200px;
+}
+
+.search-icon {
+    position: absolute;
+    right: 10px;
+    color: var(--p5-black);
+    pointer-events: none;
+    transition: color 0.3s;
+    transform: skewX(-10deg);
+    /* Match input skew */
+}
+
+#search-input:focus+.search-icon {
+    color: var(--p5-red);
+}
+
 /* --- 布局 --- */
 .container {
     max-width: 1400px;
