@@ -18,12 +18,15 @@ const { post } = Astro.props;
 const { id } = Astro.params;
 
 // 3. 读取 Markdown 内容
-// 注意：admin/post.html 是前端 fetch md，这里我们保留前端 fetch 的逻辑以保持一致性
-// 或者我们可以预渲染。为了"严格复用"，我们尽量保持 HTML 结构一致。
-// admin/post.html 使用 fetch('/posts/' + id + '.md')。
-// Astro 是静态生成的，所以 md 文件应该在 public/posts/ 下，或者我们在这里预渲染。
-// 如果我们想完全复用 admin/post.html 的逻辑（前端渲染），我们只需要把 HTML 搬过来，
-// 并确保 fetch 路径正确。
+const mdPath = path.join(process.cwd(), 'src/content/posts', `${id}.md`);
+let htmlContent = '';
+try {
+  const content = fs.readFileSync(mdPath, 'utf-8');
+  htmlContent = marked.parse(content);
+} catch (e) {
+  console.error(`Error reading markdown for ${id}:`, e);
+  htmlContent = `<h1 style="color:red">Error loading content</h1><p>${e.message}</p>`;
+}
 ---
 
 <!DOCTYPE html>
@@ -34,7 +37,7 @@ const { id } = Astro.params;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LOADING... | CODE PHANTOM</title>
 
-    <style>
+    <style is:global>
         @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+SC:wght@400;700;900&display=swap');
 
         /* 视频容器样式 - 16:9 响应式，大屏占比优化 */
@@ -108,7 +111,7 @@ const { id } = Astro.params;
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css"
         rel="stylesheet" />
 
-    <style>
+    <style is:global>
         /* --- 基础变量 --- */
         :root {
             --p5-red: #D20505;
@@ -488,97 +491,70 @@ const { id } = Astro.params;
         </aside>
 
         <main class="article-main">
-            <div id="content-render-area" class="markdown-body"></div>
+            <div id="content-render-area" class="markdown-body" set:html={htmlContent}></div>
         </main>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Remove client-side marked since we use SSR -->
+    
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
-
-    <script>
+    <script is:inline>
         document.addEventListener('DOMContentLoaded', () => {
-            // Modified to support /posts/:id path
-            let postId;
-            const pathParts = window.location.pathname.split('/');
-            // Check if last part is ID (e.g. /posts/123)
-            if (pathParts.length > 0 && pathParts[pathParts.length - 1] !== '') {
-                postId = pathParts[pathParts.length - 1];
-            } else {
-                // Fallback to query param if any
-                const params = new URLSearchParams(window.location.search);
-                postId = params.get('id');
-            }
-
             const loadingScreen = document.getElementById('loading-screen');
             const contentArea = document.getElementById('main-content');
             const renderArea = document.getElementById('content-render-area');
             const tocList = document.getElementById('toc-list');
             const errorContainer = document.getElementById('error-container');
 
-            if (!postId) {
-                showError("NO ID FOUND - TARGET LOST");
-                return;
-            }
+            // Since content is pre-rendered by Astro, we just need to run post-processing
+            try {
+                // 1. 设置标题 (Already set in head, but can update if needed)
+                const h1 = renderArea.querySelector('h1');
+                // if (h1) document.title = h1.innerText + " | CODE PHANTOM";
 
-            // 动态请求 MD 文件
-            fetch(`/posts/${postId}.md`)
-                .then(response => {
-                    if (!response.ok) throw new Error("FILE NOT FOUND (404)");
-                    return response.text();
-                })
-                .then(text => {
-                    // 1. 解析 MD -> HTML
-                    renderArea.innerHTML = marked.parse(text);
-
-                    // 设置标题
-                    const h1 = renderArea.querySelector('h1');
-                    if (h1) document.title = h1.innerText + " | CODE PHANTOM";
-
-                    // 2. 【新】修正图片路径
-                    // MD里写 ![xx](img/1.png) -> 浏览器解析为 root/img/1.png (错)
-                    // 修正为 root/posts/img/1.png (对)
-                    const imgs = renderArea.querySelectorAll('img');
-                    imgs.forEach(img => {
-                        const src = img.getAttribute('src');
-                        // 如果不是网络图片(http)且不是绝对路径(/)
-                        if (!src.startsWith('http') && !src.startsWith('//') && !src.startsWith('/')) {
-                            img.src = '/posts/' + src; // 使用绝对路径 /posts/
-                        }
-                    });
-
-                    // 3. 代码高亮 & 复制按钮
-                    Prism.highlightAll();
-
-                    // 4. 【新】渲染数学公式 (MathJax)
-                    if (window.MathJax && window.MathJax.typesetPromise) {
-                        window.MathJax.typesetPromise([renderArea]).catch((err) => {
-                            console.warn('MathJax rendering failed:', err);
-                        });
+                // 2. 【新】修正图片路径
+                const imgs = renderArea.querySelectorAll('img');
+                imgs.forEach(img => {
+                    const src = img.getAttribute('src');
+                    if (!src.startsWith('http') && !src.startsWith('//') && !src.startsWith('/')) {
+                        img.src = '/posts/' + src; 
                     }
+                });
 
-                    // 5. 生成目录
-                    generateTOC();
+                // 3. 代码高亮 & 复制按钮
+                if (window.Prism) Prism.highlightAll();
 
-                    // 6. 显示内容
+                // 4. 【新】渲染数学公式 (MathJax)
+                if (window.MathJax && window.MathJax.typesetPromise) {
+                    window.MathJax.typesetPromise([renderArea]).catch((err) => {
+                        console.warn('MathJax rendering failed:', err);
+                    });
+                }
+
+                // 5. 生成目录
+                generateTOC();
+
+                // 6. 显示内容
+                if (loadingScreen) {
                     loadingScreen.style.opacity = '0';
                     setTimeout(() => loadingScreen.remove(), 500);
-                    contentArea.style.opacity = '1';
-                })
-                .catch(err => {
-                    showError(err.message);
-                });
+                }
+                contentArea.style.opacity = '1';
+
+            } catch (err) {
+                showError(err.message);
+            }
 
             // --- 辅助工具 ---
             function showError(msg) {
-                loadingScreen.style.display = 'none';
+                if (loadingScreen) loadingScreen.style.display = 'none';
                 errorContainer.style.display = 'block';
                 errorContainer.innerHTML = `<div class="error-msg">⚠️ ${msg}</div>`;
             }
