@@ -38,11 +38,12 @@ const allPosts = posts;
     </div>
 
     <nav class="top-nav">
+        <div class="marquee-wrap">
+            <div class="marquee-content">Loading...</div>
+        </div>
         <a href="#" class="brand-logo" onclick="filterPosts('HOME'); return false;">Youlai Note</a>
         <div class="menu-list">
             <a href="#" id="btn-home" class="menu-btn active" onclick="filterPosts('HOME'); return false;">HOME</a>
-            <a href="#" id="btn-unity" class="menu-btn" onclick="filterPosts('UNITY'); return false;">UNITY</a>
-            <a href="#" id="btn-shader" class="menu-btn" onclick="filterPosts('SHADER'); return false;">SHADER</a>
             <a href="/posts/about" id="btn-about" class="menu-btn">ABOUT</a>
 
             <div class="search-box">
@@ -79,6 +80,10 @@ const allPosts = posts;
                         <div style="font-size:0.8rem; color:#aaa;">Unity Developer</div>
                     </div>
                 </div>
+                <!-- 个人简介文本 -->
+                <div style="margin: 15px 0; font-size: 0.9rem; color: #ddd; line-height: 1.6;">
+                    热衷于探索游戏技术的奥秘，分享开发心得与有趣的技术发现。
+                </div>
                 <!-- 社交媒体链接 -->
                 <div class="social-links" id="social-links-container"></div>
                 <!-- 邮箱显示区域 -->
@@ -100,11 +105,7 @@ const allPosts = posts;
     </div>
 
     <footer class="footer-bar">
-        <div class="marquee-wrap">
-            <div class="marquee-content">
-                Loading...
-            </div>
-        </div>
+
         <div class="footer-info">
             <div><span style="font-weight:900; color:var(--p5-yellow);">© 2025 LIU MINGLIANG.</span> All code is
                 compiled.</div>

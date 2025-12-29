@@ -3,7 +3,8 @@
 /* --- 导航 --- */
 .top-nav {
     background: var(--p5-black);
-    padding: 20px 40px;
+    padding: 20px 40px 30px 40px;
+    /* Added bottom padding for marquee */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -15,6 +16,26 @@
     z-index: 1000;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
     box-sizing: border-box;
+}
+
+/* ... (skip unchanged lines) ... */
+
+.marquee-wrap {
+    background: var(--p5-red);
+    color: white;
+    padding: 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    font-family: 'Bangers';
+    font-size: 0.9rem;
+    position: absolute;
+    bottom: 0;
+    /* Align to bottom */
+    left: 0;
+    width: 100%;
+    z-index: 1001;
+    transform: skewX(0deg);
+    border-bottom: none;
 }
 
 .brand-logo {
@@ -135,13 +156,18 @@
 .marquee-wrap {
     background: var(--p5-red);
     color: white;
-    padding: 8px 0;
+    padding: 2px 0;
     white-space: nowrap;
     overflow: hidden;
     font-family: 'Bangers';
-    font-size: 1.2rem;
-    transform: skewX(-20deg);
-    border-bottom: 3px solid black;
+    font-size: 0.9rem;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1001;
+    transform: skewX(0deg);
+    border-bottom: none;
 }
 
 .marquee-content {
