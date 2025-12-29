@@ -5,10 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Article View | Youlai Note</title>
-    <link rel="stylesheet" href="/public/css/base.css">
-    <link rel="stylesheet" href="/public/css/background.css">
-    <link rel="stylesheet" href="/public/css/layout.css">
-    <link rel="stylesheet" href="/public/css/posts.css">
+    <link rel="stylesheet" href="/public/css/index.css">
     <link rel="stylesheet" href="/public/css/model.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -45,19 +42,49 @@
     </nav>
 
     <div class="container">
-        <main class="content-area"
-            style="background: white; padding: 40px; border: 3px solid black; box-shadow: 10px 10px 0 rgba(0,0,0,0.2);">
-            <h1 id="post-title" style="font-family: 'Bangers'; font-size: 2.5rem; margin-bottom: 10px;">Loading...</h1>
-            <div class="post-meta" style="color:#666; margin-bottom: 20px;">
-                <span id="post-date"></span> · <span id="post-tags"
-                    style="background:var(--p5-red); color:white; padding:2px 5px; font-size:0.8rem;"></span>
+        <div style="flex:3; display:flex; flex-direction:column;">
+            <main class="content-area"
+                style="background: white; padding: 40px; border: 3px solid black; box-shadow: 10px 10px 0 rgba(0,0,0,0.2);">
+                <h1 id="post-title" style="font-family: 'Bangers'; font-size: 2.5rem; margin-bottom: 10px;">Loading...
+                </h1>
+                <div class="post-meta" style="color:#666; margin-bottom: 20px;">
+                    <span id="post-date"></span> · <span id="post-tags"
+                        style="background:var(--p5-red); color:white; padding:2px 5px; font-size:0.8rem;"></span>
+                </div>
+
+                <img id="post-cover"
+                    style="width:100%; max-height:400px; object-fit:cover; border:2px solid black; margin-bottom:30px; display:none;">
+
+                <div id="markdown-content" class="markdown-body"></div>
+            </main>
+        </div>
+
+        <aside class="sidebar-area">
+            <div class="widget-box">
+                <div class="widget-title">OWNER</div>
+                <div class="profile-mini">
+                    <img src="/public/posts/头像.jpg" alt="Avatar" onerror="this.src='https://placehold.co/60x60'">
+                    <div>
+                        <div style="font-weight:900; color:var(--p5-white);">又来</div>
+                        <div style="font-size:0.8rem; color:#aaa;">Unity Developer</div>
+                    </div>
+                </div>
+                <div class="social-links" id="social-links-container"></div>
+                <div id="email-display" class="email-box" style="display:none;">
+                    <i class="fas fa-envelope"></i> <span id="email-text"></span>
+                </div>
             </div>
-
-            <img id="post-cover"
-                style="width:100%; max-height:400px; object-fit:cover; border:2px solid black; margin-bottom:30px; display:none;">
-
-            <div id="markdown-content" class="markdown-body"></div>
-        </main>
+            <div class="widget-box">
+                <div class="widget-title">CATEGORIES</div>
+                <div class="tag-cloud">
+                    <a href="/" class="tag-item"># UNITY3D</a>
+                    <a href="/" class="tag-item"># CSHARP</a>
+                    <a href="/" class="tag-item"># SHADER</a>
+                    <a href="/" class="tag-item"># MULTIPLAYER</a>
+                    <a href="/" class="tag-item"># VR/AR</a>
+                </div>
+            </div>
+        </aside>
     </div>
 
     <footer class="footer-bar" style="margin-top: 50px;">
@@ -79,6 +106,9 @@
 
             // Setup Edit Button
             document.getElementById('edit-btn').href = `/editor.html?id=${postId}`;
+
+            // Load Social Links
+            loadSocialLinks();
 
             try {
                 // 1. Fetch Metadata
@@ -117,6 +147,44 @@
                 document.getElementById('markdown-content').innerHTML = `<h2 style="color:red">FAILED TO LOAD CONTENT</h2><p>${err.message}</p>`;
             }
         });
+
+        async function loadSocialLinks() {
+            try {
+                const res = await fetch('/config.json');
+                if (!res.ok) return;
+
+                const config = await res.json();
+                const container = document.getElementById('social-links-container');
+
+                if (!container || !config.social) return;
+
+                container.innerHTML = '';
+                const emailBox = document.getElementById('email-display');
+                const emailText = document.getElementById('email-text');
+
+                Object.entries(config.social).forEach(([key, social]) => {
+                    if (key === 'email') {
+                        if (emailBox && emailText) {
+                            emailBox.style.display = 'block';
+                            const displayEmail = social.url.replace('mailto:', '');
+                            emailText.innerText = displayEmail;
+                        }
+                        return;
+                    }
+
+                    const link = document.createElement('a');
+                    link.href = social.url;
+                    link.className = 'social-link';
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    link.title = social.label;
+                    link.innerHTML = `<i class="${social.icon}"></i>`;
+                    container.appendChild(link);
+                });
+            } catch (err) {
+                console.error('Failed to load social links:', err);
+            }
+        }
 
         function addCopyButtons() {
             const codeBlocks = document.querySelectorAll('pre');
