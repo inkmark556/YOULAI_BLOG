@@ -1,16 +1,4 @@
+// wrangler.jsonc
 {
-	"main": "dist/_worker.js/index.js",
-	"name": "bolg",
-  "compatibility_date": "2025-12-29",
-  "compatibility_flags": [
-    "nodejs_compat",
-    "global_fetch_strictly_public"
-  ],
-	"assets": {
-		"binding": "ASSETS",
-		"directory": "./dist"
-	},
-	"observability": {
-    "enabled": true
-  }
+  "name": "hidden-mountain-a9d5",
 }
