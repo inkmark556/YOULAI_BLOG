@@ -64,6 +64,20 @@ app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 app.get('/posts.json', (req, res) => {
     res.sendFile(path.join(__dirname, 'src', 'content', 'posts.json'));
 });
+// 5. 提供配置文件接口 (供 Admin Dashboard 使用)
+app.get('/config.json', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'config.json'));
+});
+
+app.get('/posts/:id', (req, res, next) => {
+    // Check if it's a request for a static file (like .md or image)
+    if (req.params.id.includes('.')) {
+        return next();
+    }
+    // Otherwise serve the viewer template
+    res.sendFile(path.join(__dirname, 'admin', 'post.html'));
+});
+
 app.use('/posts', express.static(path.join(__dirname, 'src', 'content', 'posts')));
 
 // 数据文件路径 (Astro 适配)

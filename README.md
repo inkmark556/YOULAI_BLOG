@@ -3,90 +3,95 @@
 
 ## 项目简介
 
-本项目是一个基于 Node.js 的个人技术博客系统，设计风格致敬《女神异闻录5》(Persona 5)。前端采用原生 HTML/CSS/JS (模块化 CSS)，后端使用 Express，支持文章管理、实时搜索、AI 辅助写作、图片上传等功能。适合作为技术笔记、游戏开发日志或个人作品集展示。
+本项目是一个基于 **Astro** (静态站点) 和 **Node.js/Express** (内容管理后台) 的个人技术博客系统，设计风格致敬《女神异闻录5》(Persona 5)。
+前端采用 **Astro** 进行静态生成，保证极速访问与 SEO 优化；后台使用 **Express** 提供文章管理、AI 辅助写作、图片上传与资源清理功能。
 
 ## 技术栈
 
--   **前端**:
-    -   HTML5 / Semantic HTML
-    -   CSS3 (Modular: Base, Layout, Components, Posts, Background FX)
-    -   JavaScript (Vanilla ES6+)
-    -   Font Awesome (Icons)
-    -   Google Fonts (Bangers, Noto Sans SC)
--   **后端**:
-    -   Node.js
-    -   Express.js
-    -   Multer (文件上传)
+-   **静态站点 (Public Site)**:
+    -   **Astro**: 静态站点生成器 (SSG)
+    -   **HTML5 / Semantic HTML**
+    -   **CSS3**: 模块化设计 (Base, Layout, Components, Posts, Background FX)
+    -   **JavaScript**: Vanilla ES6+
+-   **后台管理 (CMS)**:
+    -   **Node.js & Express**: API 服务与静态资源托管
+    -   **Multer**: 图片上传处理
+    -   **DeepSeek API**: AI 辅助生成标题、摘要与标签
 -   **数据存储**:
-    -   JSON 文件系统 (`posts.json`, `config.json`)
-    -   Markdown 文件存储 (`posts/*.md`)
--   **AI 集成**:
-    -   DeepSeek API (自动生成标题、摘要、标签)
+    -   **JSON**: `src/content/posts.json` (文章索引)
+    -   **Markdown**: `src/content/posts/*.md` (文章内容)
 
 ## 代码目录结构
 
 ```
-├── index.html              # 首页，文章列表、搜索与分类
-├── post.html               # 文章详情页，Markdown 渲染
-├── editor.html             # 文章编辑/新建页面
-├── server.js               # Node.js 后端服务，API 路由
-├── config.json             # 全局配置（社交链接、底部跑马灯等）
-├── posts.json              # 文章索引数据
-├── posts/                  # 文章 Markdown 源文件
-├── uploads/                # 图片上传目录
-├── css/                    # 模块化样式文件
-│   ├── base.css            # 基础重置与变量
-│   ├── layout.css          # 布局（导航、页脚）
-│   ├── components.css      # 组件（按钮、侧边栏）
-│   ├── posts.css           # 文章列表样式
-│   └── background.css      # P5 风格动态背景
-└── js/                     # 前端逻辑
-    ├── index.js            # 首页逻辑（搜索、筛选、渲染）
-    ├── editor.js           # 编辑器逻辑（AI 辅助、发布）
-    └── ...
+├── admin/                  # 后台管理界面 (CMS Frontend)
+│   ├── index.html          # 后台首页 (文章列表)
+│   ├── editor.html         # 文章编辑器
+│   └── ...
+├── public/                 # 静态资源 (CSS, JS, Uploads)
+│   ├── css/                # 模块化样式
+│   ├── js/                 # 前端逻辑
+│   ├── uploads/            # 图片上传目录
+│   └── config.json         # 全局配置
+├── src/                    # Astro 源码
+│   ├── content/            # 文章数据
+│   │   ├── posts.json      # 索引文件
+│   │   └── posts/          # Markdown 源文件
+│   └── pages/              # Astro 页面组件
+│       ├── index.astro     # 博客主页
+│       └── posts/          # 文章详情页
+├── server.js               # Node.js 后端服务 (CMS Backend)
+├── astro.config.mjs        # Astro 配置文件
+└── package.json            # 项目依赖
 ```
 
 ## 功能说明
 
+-   **双端架构**:
+    -   **前台 (Port 4321)**: 纯静态展示，无管理按钮，沉浸式阅读体验。
+    -   **后台 (Port 3000)**: 完整的文章增删改查 (CRUD) 功能。
 -   **P5 风格 UI**: 独特的黑红白配色，动态背景与微交互动画。
--   **文章管理**:
-    -   列表展示：支持紧凑视图，每页显示 6 篇。
-    -   实时搜索：顶部导航栏支持标题、摘要、标签的实时过滤。
-    -   分类筛选：支持按标签分类查看。
--   **编辑器**:
-    -   Markdown 实时预览。
-    -   **AI 辅助**: 输入内容后一键调用 DeepSeek 生成元数据。
-    -   **图片上传**: 支持拖拽或点击上传，自动插入 Markdown。
-    -   **视频嵌入**: 支持 Bilibili、YouTube 等视频链接自动转换。
--   **配置管理**: 通过 `config.json` 动态配置社交链接和底部跑马灯内容。
+-   **AI 辅助写作**: 集成 DeepSeek API，一键生成文章元数据。
+-   **资源清理**: 提供自动化脚本 (`cleanup.bat`) 清理未引用的孤儿图片。
 -   **响应式设计**: 完美适配桌面端与移动端。
 
 ## 快速启动
 
-1.  安装依赖
+1.  **安装依赖**
     ```bash
     npm install
     ```
-2.  启动服务
+
+2.  **启动服务 (双终端运行)**
+
+    *终端 1 (后台服务):*
     ```bash
     node server.js
     ```
-3.  访问
+    > 访问: http://localhost:3000 (管理后台)
+
+    *终端 2 (静态站点):*
+    ```bash
+    npm run dev
     ```
-    http://localhost:3000
-    ```
+    > 访问: http://localhost:4321 (博客主页)
 
 ## 文章发布与管理
 
--   **新建/编辑**: 访问 `/html/editor.html` 或点击导航栏的 `+ NEW LOG`。
--   **数据同步**: 所有操作实时写入 JSON 和 Markdown 文件，无需数据库。
+1.  访问 **http://localhost:3000** 进入管理后台。
+2.  点击 **+ NEW LOG** 新建文章，或点击 **EDIT** 修改现有文章。
+3.  在编辑器中输入 Markdown 内容，支持 **AI 生成** 元数据。
+4.  点击 **发布文章**，数据将自动同步到 `src/content/`。
+5.  刷新 **http://localhost:4321** 查看更新。
+
+## 资源清理
+
+运行根目录下的 `cleanup.bat` 脚本，可自动检测并删除 `public/uploads/images` 中未被引用的图片文件，释放存储空间。
 
 ## 联系方式
 
--   作者：刘明亮
--   QQ：17877729102
+-   作者：又来
 -   邮箱：tenb68@126.com
--   地点：湖南长沙
 
 ## 许可
 

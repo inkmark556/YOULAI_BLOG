@@ -53,10 +53,7 @@ const allPosts = posts;
                 <i class="fas fa-search search-icon"></i>
             </div>
 
-            <a href="http://localhost:3000" class="menu-btn" target="_blank"
-                style="background:var(--p5-red); color:white; margin-left:20px;">
-                + NEW LOG
-            </a>
+
         </div>
     </nav>
 
@@ -73,12 +70,7 @@ const allPosts = posts;
                             <p class="post-summary">{post.summary}</p>
                         </div>
                         
-                        <div class="card-actions">
-                            <button class="action-mini-btn btn-edit" 
-                                onclick={`event.stopPropagation(); window.open('http://localhost:3000?id=${post.id}', '_blank')`}>
-                                EDIT
-                            </button>
-                        </div>
+
                     </article>
                 ))}
             </main>

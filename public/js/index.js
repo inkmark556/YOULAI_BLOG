@@ -100,6 +100,21 @@ function renderPage(page) {
     currentFilteredPosts.forEach(post => {
         let tagsDisplay = Array.isArray(post.tags) ? post.tags.join(' / ') : post.tags;
 
+        let adminActions = '';
+        if (window.IS_ADMIN) {
+            adminActions = `
+            <div class="card-actions">
+                <button class="action-mini-btn btn-edit" 
+                    onclick="event.stopPropagation(); location.href='editor.html?id=${post.id}'">
+                    EDIT
+                </button>
+                <button class="action-mini-btn btn-del" 
+                    onclick="event.stopPropagation(); deletePost('${post.id}')">
+                    DELETE
+                </button>
+            </div>`;
+        }
+
         const html = `
     <article class="post-entry" onclick="location.href='/posts/${post.id}'">
         ${post.cover ? `<div class="post-cover" style="background-image: url('${post.cover}');"></div>` : ''}
@@ -108,17 +123,7 @@ function renderPage(page) {
             <h2 class="post-title">${post.title}</h2>
             <p class="post-summary">${post.summary}</p>
         </div>
-        
-        <div class="card-actions">
-            <button class="action-mini-btn btn-edit" 
-                onclick="event.stopPropagation(); location.href='editor.html?id=${post.id}'">
-                EDIT
-            </button>
-            <button class="action-mini-btn btn-del" 
-                onclick="event.stopPropagation(); deletePost('${post.id}')">
-                DELETE
-            </button>
-        </div>
+        ${adminActions}
     </article>
 `;
         container.innerHTML += html;
@@ -234,4 +239,3 @@ async function deletePost(id) {
 
     }, "WARNING"); // 弹窗标题
 }
-
