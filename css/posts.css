@@ -2,16 +2,18 @@
 
 .post-entry {
     background: var(--p5-white);
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    /* Reduced margin */
     position: relative;
-    clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+    clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
     transition: transform 0.3s;
     cursor: pointer;
     display: flex;
     flex-direction: row;
     overflow: hidden;
     align-items: stretch;
-    min-height: 220px;
+    min-height: 160px;
+    /* Reduced min-height */
 }
 
 .post-entry:hover {
@@ -24,13 +26,15 @@
     left: 0;
     top: 0;
     bottom: 0;
-    width: 10px;
+    width: 8px;
+    /* Thinner accent */
     background: var(--p5-black);
     z-index: 2;
 }
 
 .post-content-wrap {
-    padding: 25px 30px 25px 30px;
+    padding: 15px 20px;
+    /* Reduced padding */
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -38,9 +42,9 @@
 }
 
 .post-meta {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: #666;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     font-weight: bold;
     display: flex;
     align-items: center;
@@ -49,16 +53,17 @@
 .post-tag {
     background: var(--p5-yellow);
     color: black;
-    padding: 2px 8px;
+    padding: 1px 6px;
     margin-left: 10px;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     border: 1px solid black;
-    box-shadow: 2px 2px 0 black;
+    box-shadow: 1px 1px 0 black;
 }
 
 .post-title {
-    font-size: 2.2rem;
-    margin: 5px 0 15px 0;
+    font-size: 1.6rem;
+    /* Reduced font size */
+    margin: 5px 0 10px 0;
     color: var(--p5-black);
     font-weight: 900;
     line-height: 1.1;
@@ -70,22 +75,23 @@
 }
 
 .post-summary {
-    font-size: 1.1rem;
-    line-height: 1.6;
+    font-size: 1rem;
+    line-height: 1.5;
     color: #444;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
+    -webkit-line-clamp: 2;
+    /* Limit to 2 lines */
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
 .card-actions {
     position: absolute;
-    bottom: 15px;
-    right: 15px;
+    bottom: 10px;
+    right: 10px;
     display: flex;
-    gap: 10px;
+    gap: 8px;
     opacity: 0;
     transition: opacity 0.2s;
     z-index: 5;
@@ -97,22 +103,20 @@
 
 /* 文章封面样式 */
 .post-cover {
-    width: 300px;
-    /* Fixed width for card look */
-    min-width: 250px;
-    max-width: 400px;
+    width: 220px;
+    /* Reduced width */
+    min-width: 180px;
+    max-width: 300px;
     background-size: cover;
     background-position: center;
     background-color: var(--p5-red);
-    /* Red background */
 
     /* Card Styling */
-    margin: 15px;
-    /* Shrink from edges */
-    border: 3px solid var(--p5-black);
-    box-shadow: 5px 5px 0 var(--p5-red);
+    margin: 10px;
+    /* Reduced margin */
+    border: 2px solid var(--p5-black);
+    box-shadow: 3px 3px 0 var(--p5-red);
     transform: rotate(0.5deg);
-    /* Tilt right */
     transition: transform 0.3s;
 
     flex-shrink: 0;

@@ -4,7 +4,7 @@
 let allPostsCache = [];
 let currentFilteredPosts = []; // 当前筛选后的所有文章
 let currentPage = 1;
-const ITEMS_PER_PAGE = 5; // 每页显示几篇文章
+const ITEMS_PER_PAGE = 6; // 每页显示几篇文章
 
 // 1. 初始化
 document.addEventListener('DOMContentLoaded', initApp);

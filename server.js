@@ -8,7 +8,8 @@ const multer = require('multer');
 
 const app = express();
 const PORT = 3000;
-const DEEPSEEK_API_KEY = "sk-25ca1265fd004d0fae0d7eeebf8c6d31";
+require('dotenv').config(); // 新增这行
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY; // 改成这行
 
 // 配置图片上传存储
 const storage = multer.diskStorage({
