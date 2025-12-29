@@ -97,26 +97,30 @@
 
 /* 文章封面样式 */
 .post-cover {
-    width: 35%;
+    width: 300px;
+    /* Fixed width for card look */
     min-width: 250px;
     max-width: 400px;
     background-size: cover;
     background-position: center;
-    background-color: #f0f0f0;
-    border-right: 3px solid var(--p5-black);
+    background-color: var(--p5-red);
+    /* Red background */
+
+    /* Card Styling */
+    margin: 15px;
+    /* Shrink from edges */
+    border: 3px solid var(--p5-black);
+    box-shadow: 5px 5px 0 var(--p5-red);
+    transform: rotate(0.5deg);
+    /* Tilt right */
+    transition: transform 0.3s;
+
     flex-shrink: 0;
     position: relative;
 }
 
-/* Add a decorative overlay to the cover */
-.post-cover::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, rgba(0, 0, 0, 0.2) 0%, transparent 50%);
+.post-entry:hover .post-cover {
+    transform: rotate(0deg) scale(1.02);
 }
 
 /* Mobile Adaptation for Posts */
@@ -131,8 +135,15 @@
         min-width: 100%;
         max-width: none;
         height: 200px;
-        border-right: none;
+        margin: 0;
+        /* Reset margin */
+        border: none;
+        /* Reset border */
         border-bottom: 3px solid var(--p5-black);
+        box-shadow: none;
+        /* Reset shadow */
+        transform: none;
+        /* Reset rotation */
     }
 
     .post-content-wrap {
