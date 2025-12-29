@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 
 <head>
@@ -448,7 +448,7 @@
     </div>
 
     <nav class="mini-nav">
-        <a href="/" class="home-btn"><span>◄ PHANTOM THIEVES</span></a>
+        <a href="../index.html" class="home-btn"><span>◄ PHANTOM THIEVES</span></a>
     </nav>
 
     <div id="error-container" style="display:none;"></div>
@@ -477,17 +477,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Modified to support /posts/:id path
-            let postId;
-            const pathParts = window.location.pathname.split('/');
-            // Check if last part is ID (e.g. /posts/123)
-            if (pathParts.length > 0 && pathParts[pathParts.length - 1] !== '') {
-                postId = pathParts[pathParts.length - 1];
-            } else {
-                // Fallback to query param if any
-                const params = new URLSearchParams(window.location.search);
-                postId = params.get('id');
-            }
+            const params = new URLSearchParams(window.location.search);
+            const postId = params.get('id');
 
             const loadingScreen = document.getElementById('loading-screen');
             const contentArea = document.getElementById('main-content');

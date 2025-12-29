@@ -1,5 +1,29 @@
 [
   {
+    "id": "post_20251229070750",
+    "title": "Unity摸鱼神器：在检视窗口内嵌小说阅读器",
+    "date": "2025.12.29",
+    "tags": "UNITY / C# / EDITOR",
+    "summary": "本文分享一个在Unity检视窗口内嵌小说阅读器的脚本，支持章节识别、进度保存与按键绑定，实现上班摸鱼看小说。",
+    "cover": null
+  },
+  {
+    "id": "post_20251229070613",
+    "title": "解决Unity导入Google.Protobuf.dll的依赖缺失报错",
+    "date": "2025.12.29",
+    "tags": "UNITY / C# / GOOGLE PROTOBUF",
+    "summary": "本文分析了Unity导入Google.Protobuf.dll时出现的依赖错误，并提供了通过编译源码生成兼容Unity版本DLL的解决方案。",
+    "cover": null
+  },
+  {
+    "id": "post_20251229070308",
+    "title": "从AirSim到Cosys-AirSim：开源高保真机器人仿真的代际跃迁",
+    "date": "2025.12.29",
+    "tags": "UNITY / Airsim / Ros",
+    "summary": "本文深度对比了已归档的Microsoft AirSim与活跃的Cosys-AirSim分支，重点分析了其在UE5/Chaos物理引擎、GPU LiDAR、原生ROS2支持及跨域载具仿真等方面的架构演进与功能差异。",
+    "cover": "/uploads/images/1766991781823-867124707.jpeg"
+  },
+  {
     "id": "post_20251226070813",
     "title": "Unity 无人机物理模拟：从 PID 控制到空气动力学，打造真实穿越机手感",
     "date": "2025.12.26",

@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Youlai Note | 编辑器</title>
+
+    <link rel="stylesheet" href="../editor.css">
+    <link rel="stylesheet" href="../css/model.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+</head>
+
+<body>
+    <header class="editor-header">
+        <!-- 顶部紧凑布局 -->
+        <div class="header-content">
+            <!-- 左侧：封面缩略图 -->
+            <div class="cover-upload-mini" onclick="uploadCover()" title="点击上传封面">
+                <img id="cover-preview-img" style="display: none;">
+                <div id="cover-placeholder">
+                    <i class="fas fa-image"></i>
+                </div>
+                <input type="file" id="cover-upload-input" accept="image/*" style="display:none;"
+                    onchange="handleCoverUpload(event)">
+                <input type="text" id="in-cover" style="display:none;">
+            </div>
+
+            <!-- 中间：主要信息输入 -->
+            <div class="header-inputs">
+                <div class="input-row top-row">
+                    <input type="text" id="in-title" class="p5-input title-input" placeholder="文章标题 (TITLE)">
+                    <button onclick="aiAutoFill()" class="action-btn btn-ai" title="AI 自动生成信息">
+                        <i class="fas fa-bolt"></i> AI 生成
+                    </button>
+                </div>
+                <div class="input-row bottom-row">
+                    <input type="text" id="in-date" class="p5-input small-input" placeholder="日期 (DATE)">
+                    <input type="text" id="in-tags" class="p5-input small-input" placeholder="标签 (TAGS)">
+                    <input type="text" id="in-summary" class="p5-input flex-input" placeholder="摘要 (SUMMARY)">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="workspace">
+        <div class="edit-pane">
+            <div class="toolbar">
+                <button class="tool-btn" onclick="insertText('**', '**')">B</button>
+                <button class="tool-btn" onclick="insertText('*', '*')">I</button>
+                <button class="tool-btn" onclick="insertText('# ', '')">H1</button>
+                <button class="tool-btn" onclick="insertText('## ', '')">H2</button>
+                <button class="tool-btn" onclick="insertText('### ', '')">H3</button>
+                <button class="tool-btn" onclick="insertText('```csharp\n', '\n```')">{ }</button>
+                <button class="tool-btn" onclick="insertText('> ', '')">Ref</button>
+                <button class="tool-btn" onclick="uploadImage()" title="上传图片">📷 Img</button>
+                <button class="tool-btn" onclick="insertVideo()" title="插入视频">🎬 Vid</button>
+                <button class="tool-btn" onclick="insertText('[Text](', ')')">Link</button>
+                <!-- 隐藏的文件上传输入 -->
+                <input type="file" id="image-upload-input" accept="image/*" style="display:none;"
+                    onchange="handleImageUpload(event)">
+            </div>
+            <textarea id="markdown-input" placeholder="# Start writing here..."></textarea>
+        </div>
+
+        <div class="preview-pane">
+            <div id="preview-content" class="markdown-body">
+                <h1 style="color:#ccc; text-align:center; margin-top:50px;">PREVIEW AREA</h1>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部悬浮栏 -->
+    <footer class="editor-footer">
+        <div class="footer-left">
+            <div class="footer-branding">
+                <span style="font-family:'Bangers'; color:var(--p5-red); font-size:1.2rem;">Youlai</span>
+                <span style="font-weight:900; color:white; font-size:1.2rem; margin-left: 5px;">Note</span>
+            </div>
+            <div class="word-count-info">
+                <span style="color: #888; font-size: 0.85rem;">字数:</span>
+                <span id="word-count-text"
+                    style="color: var(--p5-yellow); font-weight: bold; font-size: 0.85rem; margin-left: 5px;">0</span>
+            </div>
+        </div>
+
+        <div class="footer-actions">
+            <button class="action-btn btn-publish" onclick="publish()">发布文章</button>
+        </div>
+    </footer>
+
+    <script src="../js/model.js"></script>
+    <script src="../js/editor.js"></script>
+
+</body>
+
+</html>
