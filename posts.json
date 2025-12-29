@@ -4,14 +4,16 @@
     "title": "Unity 无人机物理模拟：从 PID 控制到空气动力学，打造真实穿越机手感",
     "date": "2025.12.26",
     "tags": "UNITY / PHYSICS / SIMULATION",
-    "summary": "本文详细记录了在Unity中构建高拟真FPV穿越机物理模拟系统的全过程，涵盖PID控制、空气阻力、地面效应等关键技术，并提供了完整的开源实现。"
+    "summary": "本文详细记录了在Unity中构建高拟真FPV穿越机物理模拟系统的全过程，涵盖PID控制、空气阻力、地面效应等关键技术，并提供了完整的开源实现。",
+    "cover": "/uploads/images/1766969343609-503097620.png"
   },
   {
     "id": "post_20251226054819",
     "title": "Unity手柄开发指南：新旧输入系统按键映射详解",
     "date": "2025.12.26",
     "tags": "UNITY / INPUT SYSTEM / GAMEPAD",
-    "summary": "本文详细对比了Unity中传统Input Manager与新版Input System的手柄按键映射方法，涵盖Xbox、PS手柄的差异，并提供了清晰的映射表与路径说明。"
+    "summary": "本文详细对比了Unity中传统Input Manager与新版Input System的手柄按键映射方法，涵盖Xbox、PS手柄的差异，并提供了清晰的映射表与路径说明。",
+    "cover": "/uploads/images/1766732810930-212858162.jpg"
   },
   {
     "id": "unity_001",

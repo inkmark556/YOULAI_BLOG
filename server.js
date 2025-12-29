@@ -115,6 +115,7 @@ app.post('/api/delete', (req, res) => {
 app.post('/api/upload', (req, res) => {
     try {
         const { title, id, date, tags, summary, content, cover } = req.body;
+        console.log(`[API] Upload request received for ${id}. Cover: ${cover}`);
 
         // 1. 检查 posts 文件夹是否存在
         if (!fs.existsSync(POSTS_DIR)) fs.mkdirSync(POSTS_DIR);

@@ -1,0 +1,21 @@
+/* css/base.css - Core variables and reset */
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+SC:wght@400;700;900&display=swap');
+
+:root {
+    --p5-red: #D20505;
+    --p5-black: #151515;
+    --p5-grey: #222;
+    --p5-white: #fafafa;
+    --p5-yellow: #fce100;
+}
+
+body {
+    margin: 0;
+    background-color: var(--p5-black);
+    font-family: 'Noto Sans SC', sans-serif;
+    color: var(--p5-black);
+    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}

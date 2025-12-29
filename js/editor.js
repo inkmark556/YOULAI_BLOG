@@ -130,8 +130,10 @@ async function publish() {
         tags: document.getElementById('in-tags').value,
         summary: document.getElementById('in-summary').value,
         content: input.value,
-        cover: document.getElementById('in-cover').value || undefined  // 封面（可选）
+        cover: document.getElementById('in-cover').value || null  // 封面（可选，为空则传 null）
     };
+
+    console.log("Preparing to publish:", data); // Debug log
 
     if (!data.title || !data.content) {
         Phantom.alert("数据缺失: 标题和内容是必填项。", "数据错误");
