@@ -184,6 +184,25 @@
             clip-path: polygon(0 0, 100% 0, 100% 95%, 90% 100%, 0 100%);
         }
 
+        /* P5R 风格滚动条 */
+        .toc-sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .toc-sidebar::-webkit-scrollbar-track {
+            background: var(--p5-black);
+            border-left: 1px solid #333;
+        }
+
+        .toc-sidebar::-webkit-scrollbar-thumb {
+            background: var(--p5-red);
+            border-radius: 0;
+        }
+
+        .toc-sidebar::-webkit-scrollbar-thumb:hover {
+            background: var(--p5-yellow);
+        }
+
         .toc-title {
             font-family: 'Bangers';
             color: var(--p5-red);
