@@ -11,7 +11,7 @@
     "id": "post_20251229070308",
     "title": "从AirSim到Cosys-AirSim：开源高保真机器人仿真的代际跃迁",
     "date": "2025.12.29",
-    "tags": "UNITY / Airsim / Ros",
+    "tags": "UNITY /AIRSIM / ROS",
     "summary": "本文深度对比了已归档的Microsoft AirSim与活跃的Cosys-AirSim分支，重点分析了其在UE5/Chaos物理引擎、GPU LiDAR、原生ROS2支持及跨域载具仿真等方面的架构演进与功能差异。",
     "cover": "/uploads/images/1766991781823-867124707.jpeg"
   },
