@@ -1,21 +1,24 @@
 {
-  "name": "bolg",
+  "name": "youlai-blog",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "个人技术博客系统 - P5R 风格",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview"
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/inkmark556/YOULAI_BLOG.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "blog",
+    "node.js",
+    "express",
+    "persona5"
+  ],
+  "author": "又来 (Youlai)",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
@@ -23,7 +26,6 @@
   },
   "homepage": "https://github.com/inkmark556/YOULAI_BLOG#readme",
   "dependencies": {
-    "astro": "^5.16.6",
     "body-parser": "^2.2.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",

@@ -52,17 +52,13 @@ const upload = multer({
 app.use(cors());
 app.use(bodyParser.json());
 
-// --- 静态资源服务配置 (Astro 适配) ---
-// 1. 默认访问 admin 文件夹 (编辑器)
-app.use(express.static(path.join(__dirname, 'admin')));
-// 2. 让编辑器能加载 public 下的 css/js
-app.use('/public', express.static(path.join(__dirname, 'public')));
-// 3. 让编辑器能显示上传的图片
-app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+// --- 静态资源服务配置 ---
+// 1. 将 public 目录作为根目录服务 (index.html, editor.html 等都在这里)
+app.use(express.static(path.join(__dirname, 'public')));
 
 // 4. 提供文章数据接口 (供编辑器使用)
 app.get('/posts.json', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src', 'content', 'posts.json'));
+    res.sendFile(path.join(__dirname, 'public', 'posts', 'posts.json'));
 });
 // 5. 提供配置文件接口 (供 Admin Dashboard 使用)
 app.get('/config.json', (req, res) => {
@@ -75,14 +71,14 @@ app.get('/posts/:id', (req, res, next) => {
         return next();
     }
     // Otherwise serve the viewer template
-    res.sendFile(path.join(__dirname, 'admin', 'post.html'));
+    res.sendFile(path.join(__dirname, 'public', 'post.html'));
 });
 
-app.use('/posts', express.static(path.join(__dirname, 'src', 'content', 'posts')));
+app.use('/posts', express.static(path.join(__dirname, 'public', 'posts')));
 
-// 数据文件路径 (Astro 适配)
-const POSTS_DIR = path.join(__dirname, 'src', 'content', 'posts');
-const LIST_FILE = path.join(__dirname, 'src', 'content', 'posts.json');
+// 数据文件路径
+const POSTS_DIR = path.join(__dirname, 'public', 'posts');
+const LIST_FILE = path.join(__dirname, 'public', 'posts', 'posts.json');
 
 // --- 图片上传接口 ---
 app.post('/api/upload-image', upload.single('image'), (req, res) => {

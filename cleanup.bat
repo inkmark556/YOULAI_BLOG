@@ -1,4 +1,4 @@
 @echo off
 echo Starting Cleanup Process...
-node admin/cleanup.js
+node public/js/cleanup.js
 pause
