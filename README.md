@@ -40,8 +40,6 @@
 │   └── pages/              # Astro 页面组件
 │       ├── index.astro     # 博客主页
 │       └── posts/          # 文章详情页
-├── scripts/                # 自动化脚本
-│   └── sync_to_github.bat  # 一键同步脚本
 ├── server.js               # Node.js 后端服务 (CMS Backend)
 ├── astro.config.mjs        # Astro 配置文件
 └── package.json            # 项目依赖
